@@ -1,0 +1,28 @@
+backup:
+  path: /path/to/backup/directory
+  order:
+    a: project
+    b: project2
+  projects:
+    project:
+      steps:
+        a: paths
+      ops:
+        paths:
+          plugin: paths
+          paths:
+            - /path/to/dir
+            - /path/to/dir2
+    project2:
+      steps:
+        a: docker1
+        b: paths
+      ops:
+        docker1:
+          plugin: docker
+          container: docker_container
+          action: stop
+        paths:
+          plugin: paths
+          paths:
+            - /path/to/dir
