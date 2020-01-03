@@ -36,14 +36,6 @@ class Plugin:
         self.path = path
         self.project = project
 
-    def before(self) -> str:
-        """This plugin must be run before the returned plugin name
-
-        Returns:
-            str: name of plugin this plugin must be run before
-        """
-        raise NotImplementedError
-
     def run(self) -> Tuple[bool, str]:
         """Run operations for this plugin
 
