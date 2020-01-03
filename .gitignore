@@ -1,6 +1,7 @@
 ./.coverage
 
 .idea/codeStyles/
+.idea/.gitignore
 .idea/*.xml
 .idea/*.iml
 .idea/inspectionProfiles/
