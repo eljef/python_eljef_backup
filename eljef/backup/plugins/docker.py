@@ -55,7 +55,7 @@ class DockerPlugin(plugin.Plugin):
             bool: operations completed successfully
             str: if operations failed, the error message explaining what failed
         """
-        log_action = "{0!s}ing".format(self.action)
+        log_action = "{0!s}ing".format(self.action) if self.action != 'stop' else 'stopping'
         LOGGER.info("%s docker container %s for project %s", log_action, self.container, self.project)
 
         cmd = ['docker', self.action, self.container]
