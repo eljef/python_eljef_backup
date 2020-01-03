@@ -7,25 +7,25 @@ backup:
   projects:
     project:
       steps:
-        a: paths
+        a: rsync1
       ops:
-        paths:
-          plugin: paths
+        rsync1:
+          plugin: local_rsync
           paths:
             - /path/to/dir
             - /path/to/dir2
     project2:
       steps:
         a: docker1
-        b: paths
+        b: rsync1
         c: docker2
       ops:
         docker1:
           plugin: docker
           container: docker_container
           action: stop
-        paths:
-          plugin: paths
+        rsync1:
+          plugin: local_rsync
           paths:
             - /path/to/dir
         docker2:

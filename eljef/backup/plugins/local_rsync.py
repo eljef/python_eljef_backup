@@ -15,10 +15,10 @@
 # Authors:
 # Jef Oliver <jef@eljef.me>
 #
-# paths.py : ElJef Backup Plugins Functionality
-"""ElJef Paths Backup Functionality
+# local_rsync.py : ElJef Local RSYNC Backup Functionality
+"""ElJef Local RSYNC Backup Functionality
 
-Backup files and folders to the backup path
+Backup files and folders to the local backup path using rsync.
 """
 
 import logging
@@ -33,8 +33,8 @@ from eljef.backup.plugins import plugin
 LOGGER = logging.getLogger(__name__)
 
 
-class PathsPlugin(plugin.Plugin):
-    """Paths Plugin Class
+class LocalRsyncPlugin(plugin.Plugin):
+    """Local RSYNC Plugin Class
 
     Args:
         path: full path to parent backup directory
@@ -86,13 +86,13 @@ class PathsPlugin(plugin.Plugin):
         return True, ''
 
 
-class SetupPathsPlugin(plugin.SetupPlugin):
+class SetupLocalRsyncPlugin(plugin.SetupPlugin):
     """Setup the paths plugin"""
 
     def __init__(self) -> None:
         super().__init__()
-        self.name = 'paths'
-        self.description = 'backup paths'
+        self.name = 'local_rsync'
+        self.description = 'backup paths locally using rsync'
 
     def setup(self, path: str, project: str, info: dict) -> object:
         """Sets up a plugin for operations
@@ -103,7 +103,7 @@ class SetupPathsPlugin(plugin.SetupPlugin):
             info: dictionary of information from configuration file, specific to this plugin
 
         Returns:
-            dict: dictionary key: stage_name => object: plugin class to be run
+            configured local rsync plugin object
         """
         paths = info.get('paths')
         if not paths:
@@ -111,7 +111,7 @@ class SetupPathsPlugin(plugin.SetupPlugin):
         if not isinstance(paths, list):
             raise TypeError('paths not list')
 
-        paths_object = PathsPlugin(path, project)
+        paths_object = LocalRsyncPlugin(path, project)
         paths_object.paths = paths
 
         return paths_object
