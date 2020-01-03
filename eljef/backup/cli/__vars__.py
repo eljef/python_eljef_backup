@@ -29,7 +29,7 @@ PROJECT_DESCRIPTION = 'ElJef Backup Functionality'
 PROJECT_NAME = 'eljef_backup'
 PROJECT_VERSION = VERSION
 
-defaults = {
+DEFAULTS = {
     'backup': {
         'path': '',
         'projects': list()

@@ -15,4 +15,9 @@ setup(
     url='https://github.com/eljef/python_eljef_backup',
     version='0.0.1',
     zip_safe=False,
+    entry_points={
+        'console_scripts': [
+            'eljef-backup = eljef.backup.cli.__main__:main'
+        ]
+    },
 )

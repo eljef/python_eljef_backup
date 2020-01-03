@@ -1,4 +1,6 @@
 # -*- coding: UTF-8 -*-
+# pylint: disable=too-few-public-methods
+#
 # Copyright (c) 2020, Jef Oliver
 #
 # This program is free software; you can redistribute it and/or modify it
@@ -22,7 +24,7 @@ ElJef backup backup functionality.
 from typing import Tuple
 
 
-class Plugin(object):
+class Plugin:
     """Base Plugin Class that plugins must inherit
 
     Args:
@@ -56,7 +58,7 @@ class Plugin(object):
         raise NotImplementedError
 
 
-class SetupPlugin(object):
+class SetupPlugin:
     """Base Setup Plugin Class that sets up the plugin class for operations"""
 
     def __init__(self) -> None:

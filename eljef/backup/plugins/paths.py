@@ -1,4 +1,6 @@
 # -*- coding: UTF-8 -*-
+# pylint: disable=too-few-public-methods
+#
 # Copyright (c) 2020, Jef Oliver
 #
 # This program is free software; you can redistribute it and/or modify it
@@ -65,10 +67,10 @@ class PathsPlugin(plugin.Plugin):
         LOGGER.info("copying paths for %s", self.project)
 
         backup_path = backup.create_child_backup_directory(self.path, self.project)
-        backup_path += os.pathsep if backup_path[-1] != os.pathsep else ''
+        backup_path += os.path.sep if backup_path[-1] != os.path.sep else ''
 
         for copy_path in self.paths:
-            copy_path += os.pathsep if copy_path[-1] != os.pathsep else ''
+            copy_path += os.path.sep if copy_path[-1] != os.path.sep else ''
 
             cmd = ['rsync', '-a', copy_path, backup_path]
             cmd_msg = ' '.join(cmd)

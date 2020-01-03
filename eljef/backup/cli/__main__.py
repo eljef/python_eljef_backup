@@ -21,12 +21,13 @@ ElJef CLI Main backup functionality.
 
 import logging
 import argparse
+import shutil
 
 from typing import Tuple
 
 from eljef.backup import backup
 from eljef.backup.cli.__args__ import CMD_LINE_ARGS
-from eljef.backup.cli.__vars__ import (defaults, PROJECT_DESCRIPTION, PROJECT_NAME, PROJECT_VERSION)
+from eljef.backup.cli.__vars__ import (DEFAULTS, PROJECT_DESCRIPTION, PROJECT_NAME, PROJECT_VERSION)
 from eljef.backup.project import Projects
 from eljef.core.applog import setup_app_logging
 from eljef.core.dictobj import DictObj
@@ -64,6 +65,16 @@ def do_backup_path(path: str) -> Tuple[str, str]:
         raise SystemExit("{0!s}: not found".format(path))
 
 
+def do_cleanup(path: str) -> None:
+    """Cleanup the directory used for backup
+
+    Args:
+        path: full path to parent backup directory
+    """
+    LOGGER.info("removing backup directory: %s", path)
+    shutil.rmtree(path)
+
+
 def do_config_file(path: str) -> DictObj:
     """Returns configuration information
 
@@ -74,7 +85,7 @@ def do_config_file(path: str) -> DictObj:
         configuration information as a dictionary
     """
     try:
-        return DictObj(Settings(defaults, path, '').get_all())
+        return DictObj(Settings(DEFAULTS, path, '').get_all())
     except FileNotFoundError:
         raise SystemExit("{0!s}: not found".format(path))
     except IOError:
@@ -91,7 +102,7 @@ def main() -> None:
     """Main function"""
     parser, args = do_args()
 
-    if args.version:
+    if args.version_out:
         do_version()
 
     setup_app_logging(args.debug_log)
@@ -101,6 +112,15 @@ def main() -> None:
     plugins = backup.load_plugins()
 
     projects = Projects(parent_dir, plugins, settings.backup)
-    finished, error_msg = projects.run()
-    if not finished:
-        raise SystemExit(error_msg)
+    try:
+        finished, error_msg = projects.run()
+        if not finished:
+            do_cleanup(parent_dir)
+            raise SystemExit(error_msg)
+    except (SyntaxError, ValueError) as exception_object:
+        do_cleanup(parent_dir)
+        raise SystemExit(exception_object.msg)
+
+
+if __name__ == '__main__':
+    main()
