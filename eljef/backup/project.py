@@ -57,8 +57,10 @@ class Project:
         for pos, op_name in steps.items():
             if op_name not in ops:
                 raise SyntaxError("op '{0!s}' defined but not preset in '{1!s}.ops'".format(op_name, self.project))
+
             operation = ops.get(op_name)
             plugin = operation.get('plugin')
+
             if not plugin:
                 raise SyntaxError("no plugin defined for '{0!s}'".format(op_name))
             if plugin not in plugins:
@@ -97,6 +99,7 @@ class Projects:
     def _setup(self, path: str, plugins: DictObj, info: DictObj) -> None:
         order = info.get('order')
         projects = info.get('projects')
+
         if not order or len(order) < 1:
             raise SyntaxError('no steps defined for backup')
         if not projects or len(projects) < 1:
@@ -105,6 +108,7 @@ class Projects:
         for pos, project_name in order.items():
             if project_name not in projects:
                 raise SyntaxError("project name '{0!s} defined in order but not in projects".format(project_name))
+
             self.map[pos] = Project(path, project_name, plugins, projects[project_name])
 
     def run(self) -> Tuple[bool, str]:
