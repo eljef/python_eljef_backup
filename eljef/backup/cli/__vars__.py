@@ -31,6 +31,7 @@ PROJECT_VERSION = VERSION
 
 DEFAULTS = {
     'backup': {
+        'compress': True,
         'path': '',
         'projects': list()
     }

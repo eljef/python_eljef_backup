@@ -24,6 +24,7 @@ import inspect
 import logging
 import os
 import pkgutil
+import tarfile
 
 from typing import Tuple
 
@@ -32,12 +33,21 @@ from eljef.core.dictobj import DictObj
 
 LOGGER = logging.getLogger(__name__)
 
-"""Pre Run Target"""
-TARGET_PRE_RUN = 'pre_run'
-"""Run Target"""
-TARGET_RUN = 'run'
-"""Post Run Target"""
-TARGET_POST_RUN = 'post_run'
+
+def compress_backup_directory(backup_path: str, parent_path: str, backup_name: str):
+    """Compresses the backup directory
+
+    Args:
+        backup_path: full path to base backup directory
+        parent_path: full path to the parent backup directory
+        backup_name: name of the backup folder for the currently running backup
+    """
+    tar_path = os.path.join(backup_path, "{0!s}.tar.bz2".format(backup_name))
+
+    LOGGER.info("compressing: %s => %s", parent_path, tar_path)
+
+    with tarfile.open(tar_path, "w:bz2") as tar:
+        tar.add(parent_path, arcname=backup_name)
 
 
 def create_child_backup_directory(backup_path: str, child: str) -> str:

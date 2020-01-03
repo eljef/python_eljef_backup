@@ -1,4 +1,5 @@
 backup:
+  compress: true
   path: /path/to/backup/directory
   order:
     a: project

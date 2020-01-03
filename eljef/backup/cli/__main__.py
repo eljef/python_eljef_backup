@@ -121,6 +121,11 @@ def main() -> None:
         do_cleanup(parent_dir)
         raise SystemExit(exception_object.msg)
 
+    if settings.backup.compress:
+        backup.compress_backup_directory(settings.backup.path, parent_dir, parent_name)
+
+    do_cleanup(parent_dir)
+
 
 if __name__ == '__main__':
     main()
