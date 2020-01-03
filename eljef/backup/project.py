@@ -29,10 +29,6 @@ from eljef.core.dictobj import DictObj
 
 LOGGER = logging.getLogger(__name__)
 
-_EMPTY_PROJECT_MAP = {
-    'ops': dict(),
-}
-
 
 class Project:
     """Project holder class
@@ -46,15 +42,17 @@ class Project:
 
     def __init__(self, path: str, project: str, plugins: DictObj, info: DictObj):
         self.project = project
-        self.map = DictObj(_EMPTY_PROJECT_MAP)
+        self.map = DictObj(dict())
 
         self._setup(path, plugins, info)
 
     def _setup(self, path: str, plugins: DictObj, info: DictObj) -> None:
         steps = info.get('steps')
         ops = info.get('ops')
-        if len(steps) < 1:
+        if not steps or len(steps) < 1:
             raise SyntaxError("no steps defined for '{0!s}'".format(self.project))
+        if not ops or len(ops) < 1:
+            raise SyntaxError("no operations defined for '{0!s}'".format(self.project))
 
         for pos, op_name in steps.items():
             if op_name not in ops:
@@ -66,7 +64,7 @@ class Project:
             if plugin not in plugins:
                 raise ValueError("plugin not found: {0!s}".format(plugin))
 
-            self.map.ops[pos] = plugins[plugin]().setup(path, self.project, operation)
+            self.map[pos] = plugins[plugin]().setup(path, self.project, operation)
 
     def run(self) -> Tuple[bool, str]:
         """Run operations for this project
@@ -75,8 +73,8 @@ class Project:
             bool: operations completed successfully
             str: if operations failed, the error message explaining what failed
         """
-        for pos in sorted(list(self.map.ops.keys())):
-            finished, error_msg = self.map.ops[pos].run()
+        for pos in sorted(list(self.map.keys())):
+            finished, error_msg = self.map[pos].run()
             if not finished:
                 return finished, error_msg
 
