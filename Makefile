@@ -1,4 +1,4 @@
-VERSION := 1.0.1
+VERSION := 0.0.1
 
 build:
 	python3 setup.py build
@@ -34,6 +34,4 @@ versionget:
 versionset:
 	@$(eval OLDVERSION=$(shell cat setup.py | awk -F"[=,]" '/version=/{gsub("\047", ""); print $$2}'))
 	@sed -i -e "s/$(OLDVERSION)/$(VERSION)/" eljef/backup/__version__.py
-	@sed -i -e "s/version = '$(OLDVERSION)'/version = '$(VERSION)'/" \
-	        -e "s/release = '$(OLDVERSION)'/release = '$(VERSION)'/" docs/source/conf.py
 	@sed -i -e "s/version='$(OLDVERSION)'/version='$(VERSION)'/" setup.py
