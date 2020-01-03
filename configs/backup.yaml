@@ -18,6 +18,7 @@ backup:
       steps:
         a: docker1
         b: paths
+        c: docker2
       ops:
         docker1:
           plugin: docker
@@ -27,3 +28,7 @@ backup:
           plugin: paths
           paths:
             - /path/to/dir
+        docker2:
+          plugin: docker
+          container: docker_container
+          action: start
