@@ -18,7 +18,8 @@ backup:
       steps:
         a: docker1
         b: rsync1
-        c: docker2
+        c: remove1
+        d: docker2
       ops:
         docker1:
           plugin: docker
@@ -28,6 +29,10 @@ backup:
           plugin: local_rsync
           paths:
             - /path/to/dir
+        remove1:
+          plugin: remove
+          paths:
+            - MediaCover
         docker2:
           plugin: docker
           container: docker_container
