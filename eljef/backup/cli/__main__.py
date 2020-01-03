@@ -22,6 +22,7 @@ ElJef CLI Main backup functionality.
 import logging
 import argparse
 import shutil
+import time
 
 from typing import Tuple
 
@@ -71,7 +72,7 @@ def do_cleanup(path: str) -> None:
     Args:
         path: full path to parent backup directory
     """
-    LOGGER.info("removing backup directory: %s", path)
+    LOGGER.debug("removing backup directory: %s", path)
     shutil.rmtree(path)
 
 
@@ -109,17 +110,23 @@ def main() -> None:
 
     settings = do_config_file(args.config_file)
     parent_dir, parent_name = do_backup_path(settings.backup.path)
-    plugins = backup.load_plugins()
 
-    projects = Projects(parent_dir, plugins, settings.backup)
     try:
+        plugins = backup.load_plugins()
+        projects = Projects(parent_dir, plugins, settings.backup)
+
         finished, error_msg = projects.run()
         if not finished:
             do_cleanup(parent_dir)
             raise SystemExit(error_msg)
+
     except (SyntaxError, ValueError) as exception_object:
         do_cleanup(parent_dir)
-        raise SystemExit(exception_object.msg)
+        raise SystemExit(str(exception_object))
+    except KeyboardInterrupt:
+        time.sleep(1)
+        do_cleanup(parent_dir)
+        raise SystemExit("interrupted by keyboard")
 
     if settings.backup.compress:
         backup.compress_backup_directory(settings.backup.path, parent_dir, parent_name)
