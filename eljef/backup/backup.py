@@ -21,6 +21,7 @@ ElJef backup functionality.
 
 import datetime
 import inspect
+import glob
 import logging
 import os
 import pkgutil
@@ -29,6 +30,7 @@ import tarfile
 from typing import Tuple
 
 from eljef.backup.plugins.plugin import SetupPlugin
+from eljef.core import fops
 from eljef.core.dictobj import DictObj
 
 LOGGER = logging.getLogger(__name__)
@@ -48,6 +50,28 @@ def compress_backup_directory(backup_path: str, parent_path: str, backup_name: s
 
     with tarfile.open(tar_path, "w:bz2") as tar:
         tar.add(parent_path, arcname=backup_name)
+
+
+def compress_nocompress(backup_path: str):
+    """Compresses nocompress directories from previous runs
+
+    Args:
+        backup_path: full path to base backup directory
+    """
+    os.chdir(backup_path)
+    dirs = glob.glob("*.nocompress")
+    if dirs:
+        for orig_dir in dirs:
+            new_dir = orig_dir.replace('.nocompress', '')
+            tar_path = "{0!s}.tar.bz2".format(new_dir)
+
+            LOGGER.info("compressing backup: %s", new_dir)
+            os.rename(orig_dir, new_dir)
+
+            with tarfile.open(tar_path, "w:bz2") as tar:
+                tar.add(new_dir, arcname=new_dir)
+
+            fops.delete(new_dir)
 
 
 def create_child_backup_directory(backup_path: str, child: str) -> str:

@@ -76,6 +76,20 @@ def do_cleanup(path: str) -> None:
     shutil.rmtree(path)
 
 
+def do_compress_only(path: str):
+    """Compresses nocompress directories from previous runs
+
+    Args:
+        path: full path to base backup directory
+    """
+    try:
+        backup.compress_nocompress(path)
+    except FileNotFoundError:
+        raise SystemExit("{0!s}: not found".format(path))
+    except IOError:
+        raise SystemExit("{0!s}: not a directory".format(path))
+
+
 def do_config_file(path: str) -> DictObj:
     """Returns configuration information
 
@@ -109,6 +123,11 @@ def main() -> None:
     setup_app_logging(args.debug_log)
 
     settings = do_config_file(args.config_file)
+
+    if settings.backup.compress_only:
+        do_compress_only(settings.backup.path)
+        raise SystemExit(0)
+
     parent_dir, parent_name = do_backup_path(settings.backup.path)
 
     try:
