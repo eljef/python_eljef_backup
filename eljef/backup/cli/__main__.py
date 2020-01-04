@@ -130,6 +130,8 @@ def main() -> None:
 
     if settings.backup.compress:
         backup.compress_backup_directory(settings.backup.path, parent_dir, parent_name)
+    else:
+        backup.nocompress_backup_directory(parent_dir)
 
     do_cleanup(parent_dir)
 
