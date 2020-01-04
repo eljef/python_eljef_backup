@@ -72,7 +72,7 @@ class LocalRsyncPlugin(plugin.Plugin):
             cmd += [copy_path, backup_path]
 
             cmd_msg = ' '.join(cmd)
-            LOGGER.info(cmd_msg)
+            LOGGER.debug(cmd_msg)
 
             try:
                 subprocess.run(cmd, check=True)
