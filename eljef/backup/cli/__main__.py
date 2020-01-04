@@ -120,6 +120,9 @@ def main() -> None:
             do_cleanup(parent_dir)
             raise SystemExit(error_msg)
 
+    except TypeError:
+        do_cleanup(parent_dir)
+        raise
     except (SyntaxError, ValueError) as exception_object:
         do_cleanup(parent_dir)
         raise SystemExit(str(exception_object))
