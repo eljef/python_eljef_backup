@@ -14,6 +14,8 @@ backup:
           paths:
             - /path/to/dir
             - /path/to/dir2
+          excludes:
+            - path/to/exclude
     project2:
       steps:
         a: docker1
