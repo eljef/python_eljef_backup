@@ -5,3 +5,5 @@
 * Allow plugins to run operations as different users
   * Only if base backup was run as root
   * Useful for attaching to cron jobs
+* Allow for running projects from files stored in a different directory
+  * projects.d/ style setup
