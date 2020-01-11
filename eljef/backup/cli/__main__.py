@@ -103,10 +103,6 @@ def do_config_file(path: str) -> DictObj:
         settings = DictObj(Settings(DEFAULTS, path, '').get_all())
         if not settings.get('backup'):
             raise SystemExit("{0!s}: malformed configuration file".format(path))
-        if not settings.backup.get('compress'):
-            settings.backup['compress'] = True
-        if not settings.backup.get('compress_only'):
-            settings.backup['compress_only'] = False
 
         return settings
     except FileNotFoundError:

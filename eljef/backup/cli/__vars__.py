@@ -34,6 +34,6 @@ DEFAULTS = {
         'compress': True,
         'compress_only': False,
         'path': '',
-        'projects': list()
+        'projects': dict()
     }
 }
