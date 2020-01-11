@@ -27,6 +27,7 @@ import os
 from typing import Tuple
 
 from eljef.backup.plugins import plugin
+from eljef.backup.project import Paths
 from eljef.core import fops
 
 LOGGER = logging.getLogger(__name__)
@@ -42,13 +43,13 @@ class RemovePlugin(plugin.Plugin):
         Paths should be relative to this path.
 
     Args:
-        path: full path to parent backup directory
+        paths: paths and backup name
         project: name of project
     """
 
-    def __init__(self, path: str, project: str) -> None:
-        super().__init__(path, project)
-        self.paths = list()
+    def __init__(self, paths: Paths, project: str) -> None:
+        super().__init__(paths, project)
+        self.remove_paths = list()
 
     def run(self) -> Tuple[bool, str]:
         """Run operations for this plugin
@@ -62,9 +63,9 @@ class RemovePlugin(plugin.Plugin):
             str: if operations failed, the error message explaining what failed
         """
 
-        full_path = os.path.join(self.path, self.project)
+        full_path = os.path.join(self.paths.backup_path, self.project)
 
-        for path in self.paths:
+        for path in self.remove_paths:
             LOGGER.info('removing path from backup: %s', path)
             fops.delete(os.path.join(full_path, path))
 
@@ -79,21 +80,21 @@ class SetupRemovePlugin(plugin.SetupPlugin):
         self.name = 'remove'
         self.description = 'remove paths from backup'
 
-    def setup(self, path: str, project: str, info: dict) -> object:
+    def setup(self, paths: Paths, project: str, info: dict) -> object:
         """Sets up a plugin for operations
 
         Args:
-            path: full path to parent backup directory
+            paths: paths and backup names
             project: name of project this plugin is being setup for
             info: dictionary of information from configuration file, specific to this plugin
 
         Returns:
-            configured local docker plugin object
+            dict: dictionary key: stage_name => object: plugin class to be run
         """
-        remove_object = RemovePlugin(path, project)
-        remove_object.paths = info.get('paths')
+        remove_object = RemovePlugin(paths, project)
+        remove_object.remove_paths = info.get('paths')
 
-        if not remove_object.paths or len(remove_object.paths) < 1:
+        if not remove_object.remove_paths or len(remove_object.remove_paths) < 1:
             raise ValueError('paths not set for remove')
 
         return remove_object

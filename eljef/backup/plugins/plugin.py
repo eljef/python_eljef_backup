@@ -23,17 +23,19 @@ ElJef backup backup functionality.
 
 from typing import Tuple
 
+from eljef.backup.project import Paths
+
 
 class Plugin:
     """Base Plugin Class that plugins must inherit
 
     Args:
-        path: full path to parent backup directory
+        paths: paths and backup name
         project: name of project
     """
 
-    def __init__(self, path: str, project: str) -> None:
-        self.path = path
+    def __init__(self, paths: Paths, project: str) -> None:
+        self.paths = paths
         self.project = project
 
     def run(self) -> Tuple[bool, str]:
@@ -57,11 +59,11 @@ class SetupPlugin:
         self.name = 'NOTIMPLEMENTED'
         self.description = 'NOTIMPLEMENTED'
 
-    def setup(self, path: str, project: str, info: dict) -> object:
+    def setup(self, paths: Paths, project: str, info: dict) -> object:
         """Sets up a plugin for operations
 
         Args:
-            path: full path to parent backup directory
+            paths: paths and backup names
             project: name of project this plugin is being setup for
             info: dictionary of information from configuration file, specific to this plugin
 

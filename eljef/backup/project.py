@@ -30,23 +30,37 @@ from eljef.core.dictobj import DictObj
 LOGGER = logging.getLogger(__name__)
 
 
+class Paths:
+    """Paths holder class
+
+    Args:
+        backups_path: path to base backups directory
+        backup_path: path to the current backup directory
+        backup_name: name of the this backup iteration
+    """
+    def __init__(self, backups_path: str, backup_path: str, backup_name: str) -> None:
+        self.backups_path = backups_path
+        self.backup_path = backup_path
+        self.backup_name = backup_name
+
+
 class Project:
     """Project holder class
 
     Args:
-        path: full path to backup directory
+        paths: paths and backup name
         project: name of project
         plugins: loaded plugins
         info: project settings
     """
 
-    def __init__(self, path: str, project: str, plugins: DictObj, info: DictObj):
+    def __init__(self, paths: Paths, project: str, plugins: DictObj, info: DictObj):
         self.project = project
         self.map = DictObj(dict())
 
-        self._setup(path, plugins, info)
+        self._setup(paths, plugins, info)
 
-    def _setup(self, path: str, plugins: DictObj, info: DictObj) -> None:
+    def _setup(self, paths: Paths, plugins: DictObj, info: DictObj) -> None:
         steps = info.get('steps')
         ops = info.get('ops')
         if not steps or len(steps) < 1:
@@ -66,7 +80,7 @@ class Project:
             if plugin not in plugins:
                 raise ValueError("plugin not found: {0!s}".format(plugin))
 
-            self.map[pos] = plugins[plugin]().setup(path, self.project, operation)
+            self.map[pos] = plugins[plugin]().setup(paths, self.project, operation)
 
     def run(self) -> Tuple[bool, str]:
         """Run operations for this project
@@ -86,17 +100,17 @@ class Project:
 class Projects:
     """Projects holder class
 
-    path: full path to backup directory
+    paths: paths and backup name
     plugins: loaded plugins
     info: projects settings
     """
 
-    def __init__(self, path: str, plugins: DictObj, info: DictObj) -> None:
+    def __init__(self, paths: Paths, plugins: DictObj, info: DictObj) -> None:
         self.map = DictObj(dict())
 
-        self._setup(path, plugins, info)
+        self._setup(paths, plugins, info)
 
-    def _setup(self, path: str, plugins: DictObj, info: DictObj) -> None:
+    def _setup(self, paths: Paths, plugins: DictObj, info: DictObj) -> None:
         order = info.get('order')
         projects = info.get('projects')
 
@@ -109,7 +123,7 @@ class Projects:
             if project_name not in projects:
                 raise SyntaxError("project name '{0!s} defined in order but not in projects".format(project_name))
 
-            self.map[pos] = Project(path, project_name, plugins, projects[project_name])
+            self.map[pos] = Project(paths, project_name, plugins, projects[project_name])
 
     def run(self) -> Tuple[bool, str]:
         """Run all defined projects

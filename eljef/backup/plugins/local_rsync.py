@@ -29,6 +29,7 @@ from typing import Tuple
 
 from eljef.backup import backup
 from eljef.backup.plugins import plugin
+from eljef.backup.project import Paths
 
 LOGGER = logging.getLogger(__name__)
 
@@ -37,14 +38,14 @@ class LocalRsyncPlugin(plugin.Plugin):
     """Local RSYNC Plugin Class
 
     Args:
-        path: full path to parent backup directory
+        paths: paths and backup name
         project: name of project
     """
 
-    def __init__(self, path: str, project: str) -> None:
-        super().__init__(path, project)
+    def __init__(self, paths: Paths, project: str) -> None:
+        super().__init__(paths, project)
         self.excludes = list()
-        self.paths = list()
+        self.rsync_paths = list()
 
     def run(self) -> Tuple[bool, str]:
         """Run operations for this plugin
@@ -59,10 +60,10 @@ class LocalRsyncPlugin(plugin.Plugin):
         """
         LOGGER.info("copying paths for %s", self.project)
 
-        backup_path = backup.create_child_backup_directory(self.path, self.project)
+        backup_path = backup.create_child_backup_directory(self.paths.backup_path, self.project)
         backup_path += os.path.sep if backup_path[-1] != os.path.sep else ''
 
-        for copy_path in self.paths:
+        for copy_path in self.rsync_paths:
             copy_path += os.path.sep if copy_path[-1] != os.path.sep else ''
 
             cmd = ['rsync', '-a']
@@ -92,28 +93,27 @@ class SetupLocalRsyncPlugin(plugin.SetupPlugin):
         self.name = 'local_rsync'
         self.description = 'backup paths locally using rsync'
 
-    def setup(self, path: str, project: str, info: dict) -> object:
+    def setup(self, paths: Paths, project: str, info: dict) -> object:
         """Sets up a plugin for operations
 
         Args:
-            path: full path to parent backup directory
+            paths: paths and backup names
             project: name of project this plugin is being setup for
             info: dictionary of information from configuration file, specific to this plugin
-
         Returns:
-            configured local rsync plugin object
+            dict: dictionary key: stage_name => object: plugin class to be run
         """
         excludes = info.get('excludes')
         if excludes and not isinstance(excludes, list):
             raise TypeError('excludes not list')
-        paths = info.get('paths')
-        if not paths:
+        rsync_paths = info.get('paths')
+        if not rsync_paths:
             raise ValueError('paths empty')
-        if not isinstance(paths, list):
+        if not isinstance(rsync_paths, list):
             raise TypeError('paths not list')
 
-        paths_object = LocalRsyncPlugin(path, project)
+        paths_object = LocalRsyncPlugin(paths, project)
         paths_object.excludes = excludes
-        paths_object.paths = paths
+        paths_object.rsync_paths = rsync_paths
 
         return paths_object

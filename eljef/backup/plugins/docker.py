@@ -27,6 +27,7 @@ import subprocess
 from typing import Tuple
 
 from eljef.backup.plugins import plugin
+from eljef.backup.project import Paths
 
 LOGGER = logging.getLogger(__name__)
 
@@ -35,12 +36,12 @@ class DockerPlugin(plugin.Plugin):
     """Simple Docker Operations Class
 
     Args:
-        path: full path to parent backup directory
+        paths: paths and backup name
         project: name of project
     """
 
-    def __init__(self, path: str, project: str) -> None:
-        super().__init__(path, project)
+    def __init__(self, paths: Paths, project: str) -> None:
+        super().__init__(paths, project)
         self.action = ''
         self.container = ''
 
@@ -79,18 +80,18 @@ class SetupDockerPlugin(plugin.SetupPlugin):
         self.name = 'docker'
         self.description = 'simple docker operations'
 
-    def setup(self, path: str, project: str, info: dict) -> object:
+    def setup(self, paths: Paths, project: str, info: dict) -> object:
         """Sets up a plugin for operations
 
         Args:
-            path: full path to parent backup directory
+            paths: paths and backup names
             project: name of project this plugin is being setup for
             info: dictionary of information from configuration file, specific to this plugin
 
         Returns:
-            configured local docker plugin object
+            dict: dictionary key: stage_name => object: plugin class to be run
         """
-        docker_object = DockerPlugin(path, project)
+        docker_object = DockerPlugin(paths, project)
         docker_object.action = info.get('action')
         docker_object.container = info.get('container')
 

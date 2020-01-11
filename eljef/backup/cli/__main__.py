@@ -29,7 +29,7 @@ from typing import Tuple
 from eljef.backup import backup
 from eljef.backup.cli.__args__ import CMD_LINE_ARGS
 from eljef.backup.cli.__vars__ import (DEFAULTS, PROJECT_DESCRIPTION, PROJECT_NAME, PROJECT_VERSION)
-from eljef.backup.project import Projects
+from eljef.backup.project import (Paths, Projects)
 from eljef.core.applog import setup_app_logging
 from eljef.core.dictobj import DictObj
 from eljef.core.settings import Settings
@@ -136,7 +136,8 @@ def main() -> None:
 
     try:
         plugins = backup.load_plugins()
-        projects = Projects(parent_dir, plugins, settings.backup)
+        paths = Paths(settings.backup.path, parent_dir, parent_name)
+        projects = Projects(paths, plugins, settings.backup)
 
         finished, error_msg = projects.run()
         if not finished:
