@@ -80,7 +80,8 @@ class SetupDockerPlugin(plugin.SetupPlugin):
         self.name = 'docker'
         self.description = 'simple docker operations'
 
-    def setup(self, paths: Paths, project: str, info: dict) -> object:
+    @staticmethod
+    def setup(paths: Paths, project: str, info: dict) -> object:
         """Sets up a plugin for operations
 
         Args:

@@ -80,7 +80,8 @@ class SetupRemovePlugin(plugin.SetupPlugin):
         self.name = 'remove'
         self.description = 'remove paths from backup'
 
-    def setup(self, paths: Paths, project: str, info: dict) -> object:
+    @staticmethod
+    def setup(paths: Paths, project: str, info: dict) -> object:
         """Sets up a plugin for operations
 
         Args:

@@ -93,7 +93,8 @@ class SetupLocalRsyncPlugin(plugin.SetupPlugin):
         self.name = 'local_rsync'
         self.description = 'backup paths locally using rsync'
 
-    def setup(self, paths: Paths, project: str, info: dict) -> object:
+    @staticmethod
+    def setup(paths: Paths, project: str, info: dict) -> object:
         """Sets up a plugin for operations
 
         Args:

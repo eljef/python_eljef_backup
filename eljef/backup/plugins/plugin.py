@@ -59,7 +59,8 @@ class SetupPlugin:
         self.name = 'NOTIMPLEMENTED'
         self.description = 'NOTIMPLEMENTED'
 
-    def setup(self, paths: Paths, project: str, info: dict) -> object:
+    @staticmethod
+    def setup(paths: Paths, project: str, info: dict) -> object:
         """Sets up a plugin for operations
 
         Args:
