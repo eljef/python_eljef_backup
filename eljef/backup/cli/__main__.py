@@ -101,9 +101,6 @@ def do_config_file(path: str) -> DictObj:
     """
     try:
         settings = DictObj(Settings(DEFAULTS, path, '').get_all())
-        if not settings.get('backup'):
-            raise SystemExit("{0!s}: malformed configuration file".format(path))
-
         return settings
     except FileNotFoundError:
         raise SystemExit("{0!s}: not found".format(path))
@@ -144,7 +141,7 @@ def main() -> None:
             do_cleanup(parent_dir)
             raise SystemExit(error_msg)
 
-    except TypeError:
+    except (AttributeError, KeyError, TypeError):
         do_cleanup(parent_dir)
         raise
     except (SyntaxError, ValueError) as exception_object:
