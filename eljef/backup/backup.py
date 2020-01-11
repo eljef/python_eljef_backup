@@ -131,12 +131,3 @@ def load_plugins() -> DictObj:
                     plugins[class_member().name] = class_member
 
     return DictObj(plugins)
-
-
-def nocompress_backup_directory(path: str):
-    """Adds .nocompress suffix to backup path
-
-    Args:
-        path: full path to parent directory for backups
-    """
-    os.rename(path, "{0!s}.nocompress".format(path))

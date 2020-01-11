@@ -1,10 +1,11 @@
 backup:
-  compress: true
+  clean_on_failure: true
   compress_only: false
   path: /path/to/backup/directory
   order:
     a: project
     b: project2
+    c: project3
   projects:
     project:
       steps:
@@ -40,3 +41,10 @@ backup:
           plugin: docker
           container: docker_container
           action: start
+    project3:
+      steps:
+        a: compress_backup
+      ops:
+        compress_backup:
+          plugin: compress
+          do_compress: true

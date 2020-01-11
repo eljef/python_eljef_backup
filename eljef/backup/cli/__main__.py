@@ -21,7 +21,6 @@ ElJef CLI Main backup functionality.
 
 import logging
 import argparse
-import shutil
 import time
 
 from typing import Tuple
@@ -30,6 +29,7 @@ from eljef.backup import backup
 from eljef.backup.cli.__args__ import CMD_LINE_ARGS
 from eljef.backup.cli.__vars__ import (DEFAULTS, PROJECT_DESCRIPTION, PROJECT_NAME, PROJECT_VERSION)
 from eljef.backup.project import (Paths, Projects)
+from eljef.core import fops
 from eljef.core.applog import setup_app_logging
 from eljef.core.dictobj import DictObj
 from eljef.core.settings import Settings
@@ -66,16 +66,6 @@ def do_backup_path(path: str) -> Tuple[str, str]:
         raise SystemExit("{0!s}: not found".format(path))
 
 
-def do_cleanup(path: str) -> None:
-    """Cleanup the directory used for backup
-
-    Args:
-        path: full path to parent backup directory
-    """
-    LOGGER.debug("removing backup directory: %s", path)
-    shutil.rmtree(path)
-
-
 def do_compress_only(path: str):
     """Compresses nocompress directories from previous runs
 
@@ -108,6 +98,17 @@ def do_config_file(path: str) -> DictObj:
         raise SystemExit("{0!s}: not a file".format(path))
 
 
+def do_failure_cleanup(path: str, do_cleanup: bool) -> None:
+    """Cleanup the directory used for backup
+
+    Args:
+        path: full path to parent backup directory
+        do_cleanup: cleanup the backup directory on failure if True
+    """
+    if do_cleanup:
+        fops.delete(path)
+
+
 def do_version() -> None:
     """Prints the program version and exits."""
     print("{0!s} - {1!s}".format(PROJECT_NAME, PROJECT_VERSION))
@@ -138,25 +139,19 @@ def main() -> None:
 
         finished, error_msg = projects.run()
         if not finished:
-            do_cleanup(parent_dir)
+            do_failure_cleanup(parent_dir, settings.clean_on_failure)
             raise SystemExit(error_msg)
 
     except (AttributeError, KeyError, TypeError):
-        do_cleanup(parent_dir)
+        do_failure_cleanup(parent_dir, settings.clean_on_failure)
         raise
     except (SyntaxError, ValueError) as exception_object:
-        do_cleanup(parent_dir)
+        do_failure_cleanup(parent_dir, settings.clean_on_failure)
         raise SystemExit(str(exception_object))
     except KeyboardInterrupt:
         time.sleep(1)
-        do_cleanup(parent_dir)
+        do_failure_cleanup(parent_dir, settings.clean_on_failure)
         raise SystemExit("interrupted by keyboard")
-
-    if settings.backup.compress:
-        backup.compress_backup_directory(settings.backup.path, parent_dir, parent_name)
-        do_cleanup(parent_dir)
-    else:
-        backup.nocompress_backup_directory(parent_dir)
 
 
 if __name__ == '__main__':

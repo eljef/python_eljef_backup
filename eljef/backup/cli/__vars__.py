@@ -31,7 +31,7 @@ PROJECT_VERSION = VERSION
 
 DEFAULTS = {
     'backup': {
-        'compress': True,
+        'clean_on_failure': True,
         'compress_only': False,
         'path': '',
         'projects': dict()
