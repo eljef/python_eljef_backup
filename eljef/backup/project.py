@@ -61,26 +61,15 @@ class Project:
         self._setup(paths, plugins, info)
 
     def _setup(self, paths: Paths, plugins: DictObj, info: DictObj) -> None:
-        steps = info.get('steps')
-        ops = info.get('ops')
-        if not steps or len(steps) < 1:
-            raise SyntaxError("no steps defined for '{0!s}'".format(self.project))
-        if not ops or len(ops) < 1:
-            raise SyntaxError("no operations defined for '{0!s}'".format(self.project))
-
-        for pos, op_name in steps.items():
-            if op_name not in ops:
-                raise SyntaxError("op '{0!s}' defined but not preset in '{1!s}.ops'".format(op_name, self.project))
-
-            operation = ops.get(op_name)
-            plugin = operation.get('plugin')
+        for op_name, op_settings in info.items():
+            plugin = op_settings.get('plugin')
 
             if not plugin:
                 raise SyntaxError("no plugin defined for '{0!s}'".format(op_name))
             if plugin not in plugins:
                 raise ValueError("plugin not found: {0!s}".format(plugin))
 
-            self.map[pos] = plugins[plugin]().setup(paths, self.project, operation)
+            self.map[op_name] = plugins[plugin]().setup(paths, self.project, op_settings)
 
     def run(self) -> Tuple[bool, str]:
         """Run operations for this project
@@ -111,19 +100,12 @@ class Projects:
         self._setup(paths, plugins, info)
 
     def _setup(self, paths: Paths, plugins: DictObj, info: DictObj) -> None:
-        order = info.get('order')
         projects = info.get('projects')
+        if not projects:
+            raise SyntaxError("no projects defined")
 
-        if not order or len(order) < 1:
-            raise SyntaxError('no steps defined for backup')
-        if not projects or len(projects) < 1:
-            raise SyntaxError('no projects defined for backup')
-
-        for pos, project_name in order.items():
-            if project_name not in projects:
-                raise SyntaxError("project name '{0!s} defined in order but not in projects".format(project_name))
-
-            self.map[pos] = Project(paths, project_name, plugins, projects[project_name])
+        for project_name, project_settings in projects.items():
+            self.map[project_name] = Project(paths, project_name, plugins, project_settings)
 
     def run(self) -> Tuple[bool, str]:
         """Run all defined projects

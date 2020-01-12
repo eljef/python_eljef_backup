@@ -2,49 +2,33 @@ backup:
   clean_on_failure: true
   compress_only: false
   path: /path/to/backup/directory
-  order:
-    a: project
-    b: project2
-    c: project3
   projects:
-    project:
-      steps:
-        a: rsync1
-      ops:
-        rsync1:
-          plugin: local_rsync
-          paths:
-            - /path/to/dir
-            - /path/to/dir2
-          excludes:
-            - path/to/exclude
-    project2:
-      steps:
-        a: docker1
-        b: rsync1
-        c: remove1
-        d: docker2
-      ops:
-        docker1:
-          plugin: docker
-          container: docker_container
-          action: stop
-        rsync1:
-          plugin: local_rsync
-          paths:
-            - /path/to/dir
-        remove1:
-          plugin: remove
-          paths:
-            - MediaCover
-        docker2:
-          plugin: docker
-          container: docker_container
-          action: start
-    project3:
-      steps:
-        a: compress_backup
-      ops:
-        compress_backup:
-          plugin: compress
-          do_compress: true
+    00_project:
+      00_rsync:
+        plugin: local_rsync
+        paths:
+          - /path/to/dir
+          - /path/to/dir2
+        excludes:
+          - path/to/exclude
+    01_project:
+      00_docker:
+        plugin: docker
+        container: docker_container
+        action: stop
+      01_rsync:
+        plugin: local_rsync
+        paths:
+          - /path/to/dir
+      02_remove:
+        plugin: remove
+        paths:
+          - MediaCover
+      03_docker:
+        plugin: docker
+        container: docker_container
+        action: start
+    02_project:
+      00_compress:
+        plugin: compress
+        do_compress: true
