@@ -32,6 +32,47 @@ backup:
         container: docker_container
         action: start
     02_project:
+      00_docker_compose:
+        plugin: docker_compose
+        action: build
+        path: /full/path/to/docker-compose.yml
+        stack_name: stackName
+        run_as:
+          uid: 1000
+          gid: 1000
+      01_docker_compose:
+        plugin: docker_compose
+        action: pull
+        path: /full/path/to/docker-compose.yml
+        run_as:
+          uid: 1000
+          gid: 1000
+        stack_name: stackName
+      02_docker_compose:
+        plugin: docker_compose
+        action: down
+        path: /full/path/to/docker-compose.yml
+        stack_name: stackName
+        run_as:
+          uid: 1000
+          gid: 1000
+      03_rsync:
+        plugin: local_rsync
+        paths:
+          - /path/to/dir
+      04_docker_compose:
+        plugin: docker_compose
+        action: up
+        path: /full/path/to/docker-compose.yml
+        stack_name: stackName
+        run_as:
+          uid: 1000
+          gid: 1000
+    03_project:
       00_compress:
         plugin: compress
         do_compress: true
+    04_project:
+      00_limit:
+        plugin: limit_backups
+        total: 7

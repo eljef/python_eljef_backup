@@ -10,7 +10,7 @@ name: project
 02_remove:
   plugin: remove
   paths:
-    - MediaCover
+    - somePath/
 03_docker:
   plugin: docker
   container: docker_container

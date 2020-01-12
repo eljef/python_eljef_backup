@@ -15,10 +15,10 @@
 # Authors:
 # Jef Oliver <jef@eljef.me>
 #
-# remove.py : ElJef Backup Remove Paths
-"""ElJef Backup Remove Paths
+# limit_backups.py : ElJef Backup Storage Limit
+"""ElJef Backup Storage Limit
 
-Remove paths from the backup
+ElJef Backup Storage Limit Functionality
 """
 
 import logging
@@ -26,21 +26,15 @@ import os
 
 from typing import Tuple
 
-from eljef.backup.plugins import plugin
 from eljef.backup.project import Paths
+from eljef.backup.plugins import plugin
 from eljef.core import fops
 
 LOGGER = logging.getLogger(__name__)
 
 
-class RemovePlugin(plugin.Plugin):
-    """Remove paths relative to the project folder in the backup folder
-
-    Notes:
-        Backup path is structured as:
-        /path/to/backup/2020-01-01_01-01-01/project
-
-        Paths should be relative to this path.
+class LimitPlugin(plugin.Plugin):
+    """Limit Backups
 
     Args:
         paths: paths and backup name
@@ -49,7 +43,7 @@ class RemovePlugin(plugin.Plugin):
 
     def __init__(self, paths: Paths, project: str) -> None:
         super().__init__(paths, project)
-        self.remove_paths = list()
+        self.total = 5
 
     def run(self) -> Tuple[bool, str]:
         """Run operations for this plugin
@@ -62,21 +56,26 @@ class RemovePlugin(plugin.Plugin):
             bool: operations completed successfully
             str: if operations failed, the error message explaining what failed
         """
-        full_path = os.path.join(self.paths.backup_path, self.project)
+        if self.total < 1:
+            return True, ''
 
-        for path in self.remove_paths:
-            fops.delete(os.path.join(full_path, path))
+        files = sorted(os.listdir(self.paths.backups_path))
+        current_count = len(files)
+        while current_count > self.total:
+            backup_name = files.pop(0)
+            fops.delete(os.path.join(self.paths.backups_path, backup_name))
+            current_count -= 1
 
         return True, ''
 
 
-class SetupRemovePlugin(plugin.SetupPlugin):
-    """Setup the paths plugin"""
+class SetupLimitPlugin(plugin.SetupPlugin):
+    """Setup Plugin Class that sets up the backups limit plugin class for operations"""
 
     def __init__(self) -> None:
         super().__init__()
-        self.name = 'remove'
-        self.description = 'remove paths from backup'
+        self.name = 'limit_backups'
+        self.description = 'limit the number of stored backups'
 
     @staticmethod
     def setup(paths: Paths, project: str, info: dict) -> object:
@@ -90,10 +89,15 @@ class SetupRemovePlugin(plugin.SetupPlugin):
         Returns:
             dict: dictionary key: stage_name => object: plugin class to be run
         """
-        remove_object = RemovePlugin(paths, project)
-        remove_object.remove_paths = info.get('paths')
 
-        if not remove_object.remove_paths or len(remove_object.remove_paths) < 1:
-            raise ValueError('paths not set for remove')
+        limit_plugin = LimitPlugin(paths, project)
 
-        return remove_object
+        backups_total = info.get('total')
+        if backups_total:
+            if not isinstance(backups_total, int):
+                raise ValueError('limit_backups.total must be an integer')
+            if backups_total < 1:
+                raise ValueError('limit_backups.total must be greater than zero')
+            limit_plugin.total = backups_total
+
+        return limit_plugin

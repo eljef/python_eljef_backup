@@ -55,9 +55,6 @@ class DockerPlugin(plugin.Plugin):
             bool: operations completed successfully
             str: if operations failed, the error message explaining what failed
         """
-        log_action = "{0!s}ing".format(self.action) if self.action != 'stop' else 'stopping'
-        LOGGER.info("%s docker container %s for project %s", log_action, self.container, self.project)
-
         return self.exec(['docker', self.action, self.container])
 
 
@@ -89,7 +86,7 @@ class SetupDockerPlugin(plugin.SetupPlugin):
             raise ValueError('docker action not set')
         if docker_object.action not in {'restart', 'start', 'stop'}:
             raise ValueError('docker action not one of restart, start, stop')
-        if not docker_object.container:
+        if docker_object.action != 'image_prune' and not docker_object.container:
             raise ValueError('docker container not set')
 
         return docker_object

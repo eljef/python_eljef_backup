@@ -78,6 +78,8 @@ class Project:
             bool: operations completed successfully
             str: if operations failed, the error message explaining what failed
         """
+        LOGGER.info("Project: %s", self.project)
+
         for pos in sorted(list(self.map.keys())):
             finished, error_msg = self.map[pos].run()
             if not finished:

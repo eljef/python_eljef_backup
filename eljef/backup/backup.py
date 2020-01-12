@@ -48,7 +48,7 @@ def compress_backup_directory(backup_path: str, parent_path: str, backup_name: s
     """
     tar_path = os.path.join(backup_path, "{0!s}.tar.bz2".format(backup_name))
 
-    LOGGER.info("compressing: %s => %s", parent_path, tar_path)
+    LOGGER.debug("compressing: %s => %s", parent_path, tar_path)
 
     with tarfile.open(tar_path, "w:bz2") as tar:
         tar.add(parent_path, arcname=backup_name)

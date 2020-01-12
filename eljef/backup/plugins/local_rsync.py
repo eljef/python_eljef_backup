@@ -56,8 +56,6 @@ class LocalRsyncPlugin(plugin.Plugin):
             bool: operations completed successfully
             str: if operations failed, the error message explaining what failed
         """
-        LOGGER.info("copying paths for %s", self.project)
-
         backup_path = backup.create_child_backup_directory(self.paths.backup_path, self.project)
         backup_path += os.path.sep if backup_path[-1] != os.path.sep else ''
 

@@ -22,9 +22,10 @@ ElJef backup backup functionality.
 """
 
 import logging
+import os
 import subprocess
 
-from typing import Tuple
+from typing import Callable, Tuple
 
 from eljef.backup.project import Paths
 
@@ -40,11 +41,26 @@ class Plugin:
     """
 
     def __init__(self, paths: Paths, project: str) -> None:
+        self.gid = 0
+        self.uid = 0
+        self.run_as = False
         self.paths = paths
         self.project = project
 
     @staticmethod
-    def exec(cmd: list) -> Tuple[bool, str]:
+    def demote(uid: int, gid: int) -> Callable:
+        """Demotes the subprocess to the stored uid and gid
+
+        Returns:
+            a callable to demote the run subprocess
+        """
+        def set_uid_gid():
+            os.setgid(gid)
+            os.setuid(uid)
+
+        return set_uid_gid
+
+    def exec(self, cmd: list) -> Tuple[bool, str]:
         """Execute a command
 
         Args:
@@ -57,7 +73,12 @@ class Plugin:
         LOGGER.debug(cmd_msg)
 
         try:
-            subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True)
+            if self.run_as:
+                LOGGER.debug("running as: {0:d} - {1:d}".format(self.uid, self.gid))
+                subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True,
+                               preexec_fn=self.demote(self.uid, self.gid))
+            else:
+                subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True)
         except subprocess.CalledProcessError as exception_object:
             if exception_object.stderr:
                 LOGGER.error(exception_object.stderr)
