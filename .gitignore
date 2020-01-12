@@ -14,7 +14,7 @@
 
 /build/
 dist/
-eljef_core.egg-info/
+/eljef_backup.egg-info/
 __pycache__/
 *.py[cod]
 
