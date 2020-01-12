@@ -107,18 +107,18 @@ def main() -> None:
 
         finished, error_msg = projects.run()
         if not finished:
-            do_failure_cleanup(parent_dir, settings.clean_on_failure)
+            do_failure_cleanup(parent_dir, settings.backup.clean_on_failure)
             raise SystemExit(error_msg)
 
     except (AttributeError, KeyError, TypeError):
-        do_failure_cleanup(parent_dir, settings.clean_on_failure)
+        do_failure_cleanup(parent_dir, settings.backup.clean_on_failure)
         raise
     except (SyntaxError, ValueError) as exception_object:
-        do_failure_cleanup(parent_dir, settings.clean_on_failure)
+        do_failure_cleanup(parent_dir, settings.backup.clean_on_failure)
         raise SystemExit(str(exception_object))
     except KeyboardInterrupt:
         time.sleep(1)
-        do_failure_cleanup(parent_dir, settings.clean_on_failure)
+        do_failure_cleanup(parent_dir, settings.backup.clean_on_failure)
         raise SystemExit("interrupted by keyboard")
 
 
