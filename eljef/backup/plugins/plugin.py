@@ -21,9 +21,14 @@
 ElJef backup backup functionality.
 """
 
+import logging
+import subprocess
+
 from typing import Tuple
 
 from eljef.backup.project import Paths
+
+LOGGER = logging.getLogger(__name__)
 
 
 class Plugin:
@@ -37,6 +42,32 @@ class Plugin:
     def __init__(self, paths: Paths, project: str) -> None:
         self.paths = paths
         self.project = project
+
+    @staticmethod
+    def exec(cmd: list) -> Tuple[bool, str]:
+        """Execute a command
+
+        Args:
+            cmd: command to execute
+
+        Returns;
+            A tuple of True/False if the command executed correctly and an error message if the command failed.
+        """
+        cmd_msg = ' '.join(cmd)
+        LOGGER.debug(cmd_msg)
+
+        try:
+            subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True)
+        except subprocess.CalledProcessError as exception_object:
+            if exception_object.stderr:
+                LOGGER.error(exception_object.stderr)
+
+            err_msg = "Failed: {0!s}".format(cmd_msg)
+            LOGGER.error(err_msg)
+
+            return False, err_msg
+
+        return True, ''
 
     def run(self) -> Tuple[bool, str]:
         """Run operations for this plugin

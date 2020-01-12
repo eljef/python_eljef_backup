@@ -22,7 +22,6 @@ Simple docker operations to support backups
 """
 
 import logging
-import subprocess
 
 from typing import Tuple
 
@@ -59,17 +58,7 @@ class DockerPlugin(plugin.Plugin):
         log_action = "{0!s}ing".format(self.action) if self.action != 'stop' else 'stopping'
         LOGGER.info("%s docker container %s for project %s", log_action, self.container, self.project)
 
-        cmd = ['docker', self.action, self.container]
-        cmd_msg = ' '.join(cmd)
-
-        try:
-            subprocess.run(cmd, check=True)
-        except subprocess.CalledProcessError:
-            error_msg = "Failed: {0!s}".format(cmd_msg)
-            LOGGER.error(error_msg)
-            return False, error_msg
-
-        return True, ''
+        return self.exec(['docker', self.action, self.container])
 
 
 class SetupDockerPlugin(plugin.SetupPlugin):

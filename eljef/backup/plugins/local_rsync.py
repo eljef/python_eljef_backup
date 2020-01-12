@@ -23,7 +23,6 @@ Backup files and folders to the local backup path using rsync.
 
 import logging
 import os
-import subprocess
 
 from typing import Tuple
 
@@ -74,15 +73,9 @@ class LocalRsyncPlugin(plugin.Plugin):
 
             cmd += [path, backup_path]
 
-            cmd_msg = ' '.join(cmd)
-            LOGGER.debug(cmd_msg)
-
-            try:
-                subprocess.run(cmd, check=True)
-            except subprocess.CalledProcessError:
-                error_msg = "Failed: {0!s}".format(cmd_msg)
-                LOGGER.error(error_msg)
-                return False, error_msg
+            success, err_msg = self.exec(cmd)
+            if not success:
+                return success, err_msg
 
         return True, ''
 
