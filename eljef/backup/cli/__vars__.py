@@ -34,6 +34,7 @@ DEFAULTS = {
         'clean_on_failure': True,
         'compress_only': False,
         'path': '',
+        'projects_folder': '',
         'projects': dict()
     }
 }

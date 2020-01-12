@@ -31,8 +31,6 @@ from eljef.backup.cli.__vars__ import (DEFAULTS, PROJECT_DESCRIPTION, PROJECT_NA
 from eljef.backup.project import (Paths, Projects)
 from eljef.core import fops
 from eljef.core.applog import setup_app_logging
-from eljef.core.dictobj import DictObj
-from eljef.core.settings import Settings
 
 LOGGER = logging.getLogger()
 
@@ -52,20 +50,6 @@ def do_args() -> Tuple[argparse.ArgumentParser, argparse.Namespace]:
     return parser, args
 
 
-def do_backup_path(path: str) -> Tuple[str, str]:
-    """Creates the new backup directory for this run.
-
-    Args:
-        path: full path to parent backup directory
-    """
-    try:
-        return backup.create_parent_backup_directory(path)
-    except ValueError:
-        raise SystemExit('backup path cannot be empty')
-    except FileNotFoundError:
-        raise SystemExit("{0!s}: not found".format(path))
-
-
 def do_compress_only(path: str):
     """Compresses nocompress directories from previous runs
 
@@ -78,24 +62,6 @@ def do_compress_only(path: str):
         raise SystemExit("{0!s}: not found".format(path))
     except IOError:
         raise SystemExit("{0!s}: not a directory".format(path))
-
-
-def do_config_file(path: str) -> DictObj:
-    """Returns configuration information
-
-    Args:
-        path: full path to configuration file
-
-    Returns:
-        configuration information as a dictionary
-    """
-    try:
-        settings = DictObj(Settings(DEFAULTS, path, '').get_all())
-        return settings
-    except FileNotFoundError:
-        raise SystemExit("{0!s}: not found".format(path))
-    except IOError:
-        raise SystemExit("{0!s}: not a file".format(path))
 
 
 def do_failure_cleanup(path: str, do_cleanup: bool) -> None:
@@ -124,13 +90,15 @@ def main() -> None:
 
     setup_app_logging(args.debug_log)
 
-    settings = do_config_file(args.config_file)
+    try:
+        settings = backup.load_config(args.config_file, DEFAULTS)
+        parent_dir, parent_name = backup.create_parent_backup_directory(settings.backup.path)
+    except (FileNotFoundError, IOError, ValueError) as exception_object:
+        raise SystemExit(exception_object)
 
     if settings.backup.compress_only:
         do_compress_only(settings.backup.path)
         raise SystemExit(0)
-
-    parent_dir, parent_name = do_backup_path(settings.backup.path)
 
     try:
         plugins = backup.load_plugins()

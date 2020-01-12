@@ -2,6 +2,7 @@ backup:
   clean_on_failure: true
   compress_only: false
   path: /path/to/backup/directory
+  projects_folder: path/to/projects.d/
   projects:
     00_project:
       00_rsync:

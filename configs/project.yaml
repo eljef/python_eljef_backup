@@ -1,0 +1,16 @@
+00_docker:
+  plugin: docker
+  container: docker_container
+  action: stop
+01_rsync:
+  plugin: local_rsync
+  paths:
+    - /path/to/dir
+02_remove:
+  plugin: remove
+  paths:
+    - MediaCover
+03_docker:
+  plugin: docker
+  container: docker_container
+  action: start
