@@ -7,6 +7,4 @@
   * Useful for attaching to cron jobs
   * example:
     * https://gist.github.com/sweenzor/1685717
-* Allow for running projects from files stored in a different directory
-  * projects.d/ style setup
 * Add plugin to backup mariadb via a dump
