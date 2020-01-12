@@ -73,6 +73,11 @@ def do_failure_cleanup(path: str, do_cleanup: bool) -> None:
     """
     if do_cleanup:
         fops.delete(path)
+        for ext in {'tar.gz', 'tar.bz2'}:
+            try:
+                fops.delete("{0!s}.{1!s}".format(path, ext))
+            except FileNotFoundError:
+                pass
 
 
 def do_version() -> None:
