@@ -44,7 +44,6 @@ class LocalRsyncPlugin(plugin.Plugin):
 
     def __init__(self, paths: Paths, project: str) -> None:
         super().__init__(paths, project)
-        self.excludes = list()
         self.rsync_paths = list()
 
     def run(self) -> Tuple[bool, str]:
@@ -64,13 +63,16 @@ class LocalRsyncPlugin(plugin.Plugin):
         backup_path += os.path.sep if backup_path[-1] != os.path.sep else ''
 
         for copy_path in self.rsync_paths:
-            copy_path += os.path.sep if copy_path[-1] != os.path.sep else ''
+            path = copy_path.get('path')
+            path += os.path.sep if path[-1] != os.path.sep else ''
 
             cmd = ['rsync', '-a']
-            if self.excludes:
-                for exclude in self.excludes:
-                    cmd += ['--exclude', exclude]
-            cmd += [copy_path, backup_path]
+
+            excludes = copy_path.get('excludes', list())
+            for exclude in excludes:
+                cmd += ['--exclude', exclude]
+
+            cmd += [path, backup_path]
 
             cmd_msg = ' '.join(cmd)
             LOGGER.debug(cmd_msg)
@@ -104,9 +106,6 @@ class SetupLocalRsyncPlugin(plugin.SetupPlugin):
         Returns:
             dict: dictionary key: stage_name => object: plugin class to be run
         """
-        excludes = info.get('excludes')
-        if excludes and not isinstance(excludes, list):
-            raise TypeError('excludes not list')
         rsync_paths = info.get('paths')
         if not rsync_paths:
             raise ValueError('paths empty')
@@ -114,7 +113,6 @@ class SetupLocalRsyncPlugin(plugin.SetupPlugin):
             raise TypeError('paths not list')
 
         paths_object = LocalRsyncPlugin(paths, project)
-        paths_object.excludes = excludes
         paths_object.rsync_paths = rsync_paths
 
         return paths_object

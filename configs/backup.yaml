@@ -8,10 +8,11 @@ backup:
       00_rsync:
         plugin: local_rsync
         paths:
-          - /path/to/dir
-          - /path/to/dir2
-        excludes:
-          - path/to/exclude
+          - path: /path/to/dir
+            exclude:
+            - path/to/exclude
+            - path/to/exclude2
+          - path: /path/to/dir2
     01_project:
       00_docker:
         plugin: docker
