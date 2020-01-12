@@ -105,7 +105,8 @@ class Projects:
             raise SyntaxError("no projects defined")
 
         for project_name, project_settings in projects.items():
-            self.map[project_name] = Project(paths, project_name, plugins, project_settings)
+            name = project_settings.get('name') if project_settings.get('name') else project_name
+            self.map[name] = Project(paths, name, plugins, project_settings)
 
     def run(self) -> Tuple[bool, str]:
         """Run all defined projects
