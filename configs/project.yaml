@@ -1,3 +1,4 @@
+name: project
 00_docker:
   plugin: docker
   container: docker_container

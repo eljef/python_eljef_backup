@@ -5,6 +5,7 @@ backup:
   projects_folder: path/to/projects.d/
   projects:
     00_project:
+      name: project
       00_rsync:
         plugin: local_rsync
         paths:
