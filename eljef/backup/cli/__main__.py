@@ -31,6 +31,7 @@ from eljef.backup.cli.__vars__ import (DEFAULTS, PROJECT_DESCRIPTION, PROJECT_NA
 from eljef.backup.project import (Paths, Projects)
 from eljef.core import fops
 from eljef.core.applog import setup_app_logging
+from eljef.core.dictobj import DictObj
 
 LOGGER = logging.getLogger()
 
@@ -48,20 +49,6 @@ def do_args() -> Tuple[argparse.ArgumentParser, argparse.Namespace]:
     args = parser.parse_args()
 
     return parser, args
-
-
-def do_compress_only(path: str):
-    """Compresses nocompress directories from previous runs
-
-    Args:
-        path: full path to base backup directory
-    """
-    try:
-        backup.compress_nocompress(path)
-    except FileNotFoundError:
-        raise SystemExit("{0!s}: not found".format(path))
-    except IOError:
-        raise SystemExit("{0!s}: not a directory".format(path))
 
 
 def do_failure_cleanup(path: str, do_cleanup: bool) -> None:
@@ -86,27 +73,14 @@ def do_version() -> None:
     raise SystemExit(0)
 
 
-def main() -> None:
-    """Main function"""
-    parser, args = do_args()
-
-    if args.version_out:
-        do_version()
-
-    setup_app_logging(args.debug_log)
-
+def main_backup_directory(settings: DictObj, plugins: DictObj) -> None:
+    """Main functionality with a backup directory"""
     try:
-        settings = backup.load_config(args.config_file, DEFAULTS)
         parent_dir, parent_name = backup.create_parent_backup_directory(settings.backup.path)
     except (FileNotFoundError, IOError, ValueError) as exception_object:
         raise SystemExit(exception_object)
 
-    if settings.backup.compress_only:
-        do_compress_only(settings.backup.path)
-        raise SystemExit(0)
-
     try:
-        plugins = backup.load_plugins()
         paths = Paths(settings.backup.path, parent_dir, parent_name)
         projects = Projects(paths, plugins, settings.backup)
 
@@ -125,6 +99,46 @@ def main() -> None:
         time.sleep(1)
         do_failure_cleanup(parent_dir, settings.backup.clean_on_failure)
         raise SystemExit("interrupted by keyboard")
+
+
+def main_no_backup_directory(settings: DictObj, plugins: DictObj) -> None:
+    """Main functionality without a backup directory"""
+    try:
+        paths = Paths(settings.backup.path, '', '')
+        projects = Projects(paths, plugins, settings.backup)
+
+        finished, error_msg = projects.run()
+        if not finished:
+            raise SystemExit(error_msg)
+
+    except (AttributeError, KeyError, SyntaxError, TypeError, ValueError) as exception_object:
+        raise SystemExit(str(exception_object))
+    except KeyboardInterrupt:
+        time.sleep(1)
+        raise SystemExit("interrupted by keyboard")
+
+
+def main() -> None:
+    """Main function"""
+    parser, args = do_args()
+
+    if args.version_out:
+        do_version()
+
+    setup_app_logging(args.debug_log)
+
+    try:
+        settings = backup.load_config(args.config_file, DEFAULTS)
+        plugins = backup.load_plugins()
+    except (FileNotFoundError, IOError, ValueError) as exception_object:
+        raise SystemExit(exception_object)
+
+    if settings.backup.skip_backup_directory:
+        main_no_backup_directory(settings, plugins)
+        raise SystemExit(0)
+
+    main_backup_directory(settings, plugins)
+    raise SystemExit(0)
 
 
 if __name__ == '__main__':

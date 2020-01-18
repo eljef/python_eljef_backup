@@ -32,7 +32,7 @@ PROJECT_VERSION = VERSION
 DEFAULTS = {
     'backup': {
         'clean_on_failure': True,
-        'compress_only': False,
+        'skip_backup_directory': False,
         'path': '',
         'projects_folder': '',
         'projects': dict()

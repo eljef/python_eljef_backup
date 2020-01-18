@@ -1,6 +1,6 @@
 backup:
   clean_on_failure: true
-  compress_only: false
+  skip_backup_directory: false
   path: /path/to/backup/directory
   projects_folder: path/to/projects.d/
   projects:
