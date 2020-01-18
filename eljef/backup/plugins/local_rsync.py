@@ -134,6 +134,11 @@ class SetupLocalRsyncPlugin(plugin.SetupPlugin):
         if not isinstance(rsync_paths, list):
             raise TypeError('paths not list')
 
+        for data in rsync_paths:
+            path = data.get('path')
+            if not path:
+                raise SyntaxError('paths must include a path definition')
+
         paths_object = LocalRsyncPlugin(paths, project)
         paths_object.rsync_paths = rsync_paths
 
