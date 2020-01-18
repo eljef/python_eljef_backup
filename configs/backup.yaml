@@ -6,6 +6,7 @@ backup:
   projects:
     00_project:
       name: project
+      backup_dir: some_name
       00_rsync:
         plugin: local_rsync
         paths:
@@ -13,6 +14,7 @@ backup:
             exclude:
             - path/to/exclude
             - path/to/exclude2
+            backup_dir: /path/to/create
           - path: /path/to/dir2
     01_project:
       00_docker:

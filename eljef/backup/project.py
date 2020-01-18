@@ -21,6 +21,8 @@
 ElJef Backup Project Operations.
 """
 
+from __future__ import annotations
+
 import logging
 
 from typing import Tuple
@@ -42,6 +44,18 @@ class Paths:
         self.backups_path = backups_path
         self.backup_path = backup_path
         self.backup_name = backup_name
+        self.subdir = ''
+
+    def copy(self) -> Paths:
+        """Returns a copy of the current paths object
+
+        Returns:
+            A copy of the Paths object
+        """
+        ret = Paths(self.backups_path, self.backup_path, self.backup_name)
+        ret.subdir = self.subdir
+
+        return ret
 
 
 class Project:
@@ -111,7 +125,13 @@ class Projects:
             if not name:
                 name = project_name
 
-            self.map[project_name] = Project(paths, name, plugins, project_settings)
+            subdir = project_settings.pop('backup_dir', '')
+            if subdir:
+                new_paths = paths.copy()
+                new_paths.subdir = subdir
+                self.map[project_name] = Project(new_paths, name, plugins, project_settings)
+            else:
+                self.map[project_name] = Project(paths, name, plugins, project_settings)
 
     def run(self) -> Tuple[bool, str]:
         """Run all defined projects

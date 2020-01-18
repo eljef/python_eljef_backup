@@ -1,4 +1,5 @@
 name: project
+backup_dir: some_name
 00_docker:
   plugin: docker
   container: docker_container
@@ -6,7 +7,8 @@ name: project
 01_rsync:
   plugin: local_rsync
   paths:
-    - /path/to/dir
+    - path: /path/to/dir
+      backup_dir: holder/to/create/in/backup
 02_remove:
   plugin: remove
   paths:

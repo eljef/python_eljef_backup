@@ -33,6 +33,33 @@ from eljef.backup.project import Paths
 LOGGER = logging.getLogger(__name__)
 
 
+def _correctly_terminate_path(path: str) -> str:
+    """adds a trailing slash to the end of the path
+
+    Args:
+        path: path to add trailing slash to
+
+    Returns:
+        correctly terminated path
+    """
+    return path if path[-1] == os.path.sep else path + os.path.sep
+
+
+def _make_backup_path(path: str, subdir: str) -> str:
+    """creates the path to be used in backup operation
+
+    Args:
+        path: full path to base directory
+        subdir: subdir to create in path
+
+    Returns:
+        full path to new directory
+    """
+    backup_path = backup.create_child_backup_directory(path, subdir)
+
+    return _correctly_terminate_path(backup_path)
+
+
 class LocalRsyncPlugin(plugin.Plugin):
     """Local RSYNC Plugin Class
 
@@ -56,12 +83,16 @@ class LocalRsyncPlugin(plugin.Plugin):
             bool: operations completed successfully
             str: if operations failed, the error message explaining what failed
         """
-        backup_path = backup.create_child_backup_directory(self.paths.backup_path, self.project)
-        backup_path += os.path.sep if backup_path[-1] != os.path.sep else ''
+        backup_path = _make_backup_path(self.paths.backup_path,
+                                        self.paths.subdir if self.paths.subdir else self.project)
 
         for copy_path in self.rsync_paths:
-            path = copy_path.get('path')
-            path += os.path.sep if path[-1] != os.path.sep else ''
+            full_backup_path = backup_path
+            subdir = copy_path.get('backup_dir')
+            if subdir:
+                full_backup_path = _make_backup_path(backup_path, subdir)
+
+            path = _correctly_terminate_path(copy_path.get('path'))
 
             cmd = ['rsync', '-a']
 
@@ -69,7 +100,7 @@ class LocalRsyncPlugin(plugin.Plugin):
             for exclude in excludes:
                 cmd += ['--exclude', exclude]
 
-            cmd += [path, backup_path]
+            cmd += [path, full_backup_path]
 
             success, err_msg = self.exec(cmd)
             if not success:
