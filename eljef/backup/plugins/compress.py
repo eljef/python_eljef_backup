@@ -58,8 +58,7 @@ class CompressPlugin(plugin.Plugin):
         """
         if self.do_compress:
             compress_backup_directory(self.paths.backups_path, self.paths.backup_path, self.paths.backup_name)
-
-        fops.delete(self.paths.backup_path)
+            fops.delete(self.paths.backup_path)
 
         return True, ''
 
