@@ -66,7 +66,7 @@ def create_child_backup_directory(backup_path: str, child: str) -> str:
     """
     path = os.path.join(backup_path, child)
 
-    os.makedirs(path, 0x750, True)
+    os.makedirs(path, 0o750, True)
     LOGGER.debug("created directory: %s", path)
 
     return path
