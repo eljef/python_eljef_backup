@@ -2,7 +2,7 @@
 # pip install -r requirements.txt
 
 #### Required for operation ####
-eljef_core>=1.1.0
+eljef_core>=1.2.2
 
 #### Needed for linting ####
 flake8
