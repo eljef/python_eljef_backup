@@ -1,4 +1,4 @@
-VERSION := 0.3.0
+VERSION := 0.3.1
 
 build:
 	python3 setup.py build
@@ -21,12 +21,6 @@ install:
 lint:
 	flake8 eljef/backup
 	pylint eljef/backup
-
-test:
-	pytest
-
-testcoverage:
-	pytest --cov=eljef/ tests/
 
 versionget:
 	@echo $(VERSION)
