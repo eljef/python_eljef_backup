@@ -42,6 +42,9 @@ def _correctly_terminate_path(path: str) -> str:
     Returns:
         correctly terminated path
     """
+    if os.path.isfile(path):
+        return path
+
     return path if path[-1] == os.path.sep else path + os.path.sep
 
 
