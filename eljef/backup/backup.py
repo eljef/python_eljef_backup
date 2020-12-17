@@ -106,10 +106,10 @@ def load_config(path: str, defaults: dict) -> DictObj:
     """
     try:
         settings = Settings(defaults, path, '').get_all()
-    except FileNotFoundError:
-        raise FileNotFoundError("{0!s}: not found".format(path))
-    except IOError:
-        raise IOError("{0!s}: not a file".format(path))
+    except FileNotFoundError as exception_object:
+        raise FileNotFoundError("{0!s}: not found".format(path)) from exception_object
+    except IOError as exception_object:
+        raise IOError("{0!s}: not a file".format(path)) from exception_object
 
     return DictObj(
         merge_dictionaries(

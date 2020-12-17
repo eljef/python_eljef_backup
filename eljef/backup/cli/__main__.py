@@ -54,7 +54,7 @@ def main_backup_directory(settings: DictObj, plugins: DictObj) -> None:
     try:
         parent_dir, parent_name = backup.create_parent_backup_directory(settings.backup.path)
     except (FileNotFoundError, IOError, ValueError) as exception_object:
-        raise SystemExit(exception_object)
+        raise SystemExit(exception_object) from exception_object
 
     try:
         paths = Paths(settings.backup.path, parent_dir, parent_name)
@@ -70,10 +70,12 @@ def main_backup_directory(settings: DictObj, plugins: DictObj) -> None:
         raise
     except (SyntaxError, ValueError) as exception_object:
         do_failure_cleanup(parent_dir, settings.backup.clean_on_failure)
-        raise SystemExit(str(exception_object))
+        raise SystemExit(str(exception_object)) from exception_object
     except KeyboardInterrupt:
         time.sleep(1)
         do_failure_cleanup(parent_dir, settings.backup.clean_on_failure)
+        # There is no need to re-raise from a KeyboardInterrupt
+        # pylint: disable=W0707
         raise SystemExit("interrupted by keyboard")
 
 
@@ -88,9 +90,11 @@ def main_no_backup_directory(settings: DictObj, plugins: DictObj) -> None:
             raise SystemExit(error_msg)
 
     except (AttributeError, KeyError, SyntaxError, TypeError, ValueError) as exception_object:
-        raise SystemExit(str(exception_object))
+        raise SystemExit(str(exception_object)) from exception_object
     except KeyboardInterrupt:
         time.sleep(1)
+        # There is no need to re-raise from a KeyboardInterrupt
+        # pylint: disable=W0707
         raise SystemExit("interrupted by keyboard")
 
 
@@ -107,7 +111,7 @@ def main() -> None:
         settings = backup.load_config(args.config_file, DEFAULTS)
         plugins = backup.load_plugins()
     except (FileNotFoundError, IOError, ValueError) as exception_object:
-        raise SystemExit(exception_object)
+        raise SystemExit(exception_object) from exception_object
 
     if settings.backup.skip_backup_directory:
         main_no_backup_directory(settings, plugins)
