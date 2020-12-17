@@ -20,35 +20,17 @@ ElJef CLI Main backup functionality.
 """
 
 import logging
-import argparse
 import time
-
-from typing import Tuple
 
 from eljef.backup import backup
 from eljef.backup.cli.__args__ import CMD_LINE_ARGS
 from eljef.backup.cli.__vars__ import (DEFAULTS, PROJECT_DESCRIPTION, PROJECT_NAME, PROJECT_VERSION)
 from eljef.backup.project import (Paths, Projects)
-from eljef.core import fops
+from eljef.core import (cli, fops)
 from eljef.core.applog import setup_app_logging
 from eljef.core.dictobj import DictObj
 
 LOGGER = logging.getLogger()
-
-
-def do_args() -> Tuple[argparse.ArgumentParser, argparse.Namespace]:
-    """Returns command line arguments
-
-    Returns:
-        A tuple with the argument parser and parsed namespace
-    """
-    parser = argparse.ArgumentParser(description=PROJECT_DESCRIPTION)
-    for arg_dict in CMD_LINE_ARGS:
-        parser.add_argument(arg_dict['short'], arg_dict['long'], **arg_dict['opts'])
-
-    args = parser.parse_args()
-
-    return parser, args
 
 
 def do_failure_cleanup(path: str, do_cleanup: bool) -> None:
@@ -65,12 +47,6 @@ def do_failure_cleanup(path: str, do_cleanup: bool) -> None:
                 fops.delete("{0!s}.{1!s}".format(path, ext))
             except FileNotFoundError:
                 pass
-
-
-def do_version() -> None:
-    """Prints the program version and exits."""
-    print("{0!s} - {1!s}".format(PROJECT_NAME, PROJECT_VERSION))
-    raise SystemExit(0)
 
 
 def main_backup_directory(settings: DictObj, plugins: DictObj) -> None:
@@ -120,10 +96,10 @@ def main_no_backup_directory(settings: DictObj, plugins: DictObj) -> None:
 
 def main() -> None:
     """Main function"""
-    parser, args = do_args()
+    args = cli.args_simple(PROJECT_NAME, PROJECT_DESCRIPTION, CMD_LINE_ARGS)
 
     if args.version_out:
-        do_version()
+        cli.print_version(PROJECT_NAME, PROJECT_VERSION)
 
     setup_app_logging(args.debug_log)
 

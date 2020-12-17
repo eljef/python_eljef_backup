@@ -19,32 +19,13 @@
 ElJef CLI Backup command line arguments.
 """
 
+from eljef.core import cli
+
 CMD_LINE_ARGS = [
-    {
-        'short': '-d',
-        'long': '--debug',
-        'opts': {
-            'dest': 'debug_log',
-            'action': 'store_true',
-            'help': 'Enable debug output.'
-        }
-    },
-    {
-        'short': '-f',
-        'long': '--file',
-        'opts': {
-            'dest': 'config_file',
-            'metavar': 'config.yaml',
-            'help': 'Path to configuration file.'
-        }
-    },
-    {
-        'short': '-v',
-        'long': '--version',
-        'opts': {
-            'dest': 'version_out',
-            'action': 'store_true',
-            'help': 'Print version and exit.'
-        }
-    }
+    cli.Arg(['-d', '--debug'],
+            {'dest': 'debug_log', 'action': 'store_true', 'help': 'Enable debug output.'}),
+    cli.Arg(['-f', '--file'],
+            {'dest': 'config_file', 'metavar': 'config.yaml', 'help': 'Path to configuration file.'}),
+    cli.Arg(['-v', '--version'],
+            {'dest': 'version_out', 'action': 'store_true', 'help': 'Print version and exit.'})
 ]
