@@ -1,5 +1,5 @@
 # -*- coding: UTF-8 -*-
-# Copyright (c) 2020, Jef Oliver
+# Copyright (c) 2020-2022, Jef Oliver
 #
 # This program is free software; you can redistribute it and/or modify it
 # under the terms and conditions of the GNU Lesser General Public License,
@@ -35,6 +35,6 @@ DEFAULTS = {
         'skip_backup_directory': False,
         'path': '',
         'projects_folder': '',
-        'projects': dict()
+        'projects': {}
     }
 }

@@ -1,5 +1,5 @@
 # -*- coding: UTF-8 -*-
-# Copyright (c) 2020, Jef Oliver
+# Copyright (c) 2020-2022, Jef Oliver
 #
 # This program is free software; you can redistribute it and/or modify it
 # under the terms and conditions of the GNU Lesser General Public License,
@@ -42,9 +42,9 @@ def do_failure_cleanup(path: str, do_cleanup: bool) -> None:
     """
     if do_cleanup:
         fops.delete(path)
-        for ext in {'tar.gz', 'tar.bz2'}:
+        for ext in ('tar.gz', 'tar.bz2'):
             try:
-                fops.delete("{0!s}.{1!s}".format(path, ext))
+                fops.delete(f"{path}.{ext}")
             except FileNotFoundError:
                 pass
 

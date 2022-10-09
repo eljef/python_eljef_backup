@@ -1,5 +1,5 @@
 # -*- coding: UTF-8 -*-
-# Copyright (c) 2020, Jef Oliver
+# Copyright (c) 2020-2022, Jef Oliver
 #
 # This program is free software; you can redistribute it and/or modify it
 # under the terms and conditions of the GNU Lesser General Public License,
@@ -46,7 +46,7 @@ def compress_backup_directory(backup_path: str, parent_path: str, backup_name: s
         parent_path: full path to the parent backup directory
         backup_name: name of the backup folder for the currently running backup
     """
-    tar_path = os.path.join(backup_path, "{0!s}.tar.bz2".format(backup_name))
+    tar_path = os.path.join(backup_path, f"{backup_name}.tar.bz2")
 
     LOGGER.debug("compressing: %s => %s", parent_path, tar_path)
 
@@ -73,6 +73,7 @@ def create_child_backup_directory(backup_path: str, child: str) -> str:
 
 
 def create_parent_backup_directory(path: str) -> Tuple[str, str]:
+    # noinspection GrazieInspection
     """Creates backup directory for current run with the data appended to the name
 
     Args:
@@ -107,16 +108,16 @@ def load_config(path: str, defaults: dict) -> DictObj:
     try:
         settings = Settings(defaults, path, '').get_all()
     except FileNotFoundError as exception_object:
-        raise FileNotFoundError("{0!s}: not found".format(path)) from exception_object
+        raise FileNotFoundError(f"{path}: not found") from exception_object
     except IOError as exception_object:
-        raise IOError("{0!s}: not a file".format(path)) from exception_object
+        raise IOError(f"{path}: not a file") from exception_object
 
     return DictObj(
         merge_dictionaries(
             settings,
             load_projects_folder(
                 path,
-                settings.get('backup', dict()).get('projects_folder')
+                settings.get('backup', {}).get('projects_folder')
             )
         )
     )
@@ -128,7 +129,7 @@ def load_plugins() -> DictObj:
     Returns:
         DictObj: plugin name => Setup Plugin object
     """
-    plugins = dict()
+    plugins = {}
     imported_package = __import__('eljef.backup.plugins', fromlist=['plugin'])
     for i in pkgutil.iter_modules(imported_package.__path__, imported_package.__name__ + '.'):
         if not i.ispkg:
@@ -149,7 +150,7 @@ def load_projects_folder(path: str, projects_folder: str) -> dict:
         projects_folder: projects folder from configuration file
     """
     if not projects_folder:
-        return dict()
+        return {}
 
     full_path = os.path.join(os.path.realpath(os.path.dirname(path)), projects_folder)
 
@@ -171,7 +172,7 @@ def load_projects_folder_read() -> dict:
     Returns:
         a dictionary to be merged into the main settings object.
     """
-    projects = dict()
+    projects = {}
     files = glob.glob("*.yaml")
 
     for file in files:

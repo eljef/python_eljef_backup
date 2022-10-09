@@ -1,7 +1,7 @@
 # -*- coding: UTF-8 -*-
 # pylint: disable=too-few-public-methods
 #
-# Copyright (c) 2020, Jef Oliver
+# Copyright (c) 2020-2022, Jef Oliver
 #
 # This program is free software; you can redistribute it and/or modify it
 # under the terms and conditions of the GNU Lesser General Public License,
@@ -74,7 +74,7 @@ class Plugin:
 
         try:
             if self.run_as:
-                LOGGER.debug("running as: {0:d} - {1:d}".format(self.uid, self.gid))
+                LOGGER.debug("running as: %s - %s", self.uid, self.gid)
                 subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True,
                                preexec_fn=self.demote(self.uid, self.gid))
             else:
@@ -83,7 +83,7 @@ class Plugin:
             if exception_object.stderr:
                 LOGGER.error(exception_object.stderr)
 
-            err_msg = "Failed: {0!s}".format(cmd_msg)
+            err_msg = f"Failed: {cmd_msg}"
             LOGGER.error(err_msg)
 
             return False, err_msg

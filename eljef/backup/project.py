@@ -1,7 +1,7 @@
 # -*- coding: UTF-8 -*-
 # pylint: disable=too-few-public-methods
 #
-# Copyright (c) 2020, Jef Oliver
+# Copyright (c) 2020-2022, Jef Oliver
 #
 # This program is free software; you can redistribute it and/or modify it
 # under the terms and conditions of the GNU Lesser General Public License,
@@ -21,8 +21,6 @@
 ElJef Backup Project Operations.
 """
 
-from __future__ import annotations
-
 import logging
 
 from typing import Tuple
@@ -38,7 +36,7 @@ class Paths:
     Args:
         backups_path: path to base backups directory
         backup_path: path to the current backup directory
-        backup_name: name of the this backup iteration
+        backup_name: name of this backup iteration
     """
     def __init__(self, backups_path: str, backup_path: str, backup_name: str) -> None:
         self.backups_path = backups_path
@@ -46,7 +44,7 @@ class Paths:
         self.backup_name = backup_name
         self.subdir = ''
 
-    def copy(self) -> Paths:
+    def copy(self) -> "Paths":
         """Returns a copy of the current paths object
 
         Returns:
@@ -64,13 +62,13 @@ class Project:
     Args:
         paths: paths and backup name
         project: name of project
-        plugins: loaded plugins
+        plugins: loaded plug-ins
         info: project settings
     """
 
     def __init__(self, paths: Paths, project: str, plugins: DictObj, info: DictObj):
         self.project = project
-        self.map = DictObj(dict())
+        self.map = DictObj({})
 
         self._setup(paths, plugins, info)
 
@@ -79,9 +77,9 @@ class Project:
             plugin = op_settings.get('plugin')
 
             if not plugin:
-                raise SyntaxError("no plugin defined for '{0!s}'".format(op_name))
+                raise SyntaxError(f"no plugin defined for '{op_name}'")
             if plugin not in plugins:
-                raise ValueError("plugin not found: {0!s}".format(plugin))
+                raise ValueError(f"plugin not found: {plugin}")
 
             self.map[op_name] = plugins[plugin]().setup(paths, self.project, op_settings)
 
@@ -106,12 +104,12 @@ class Projects:
     """Projects holder class
 
     paths: paths and backup name
-    plugins: loaded plugins
+    plugins: loaded plug-ins
     info: projects settings
     """
 
     def __init__(self, paths: Paths, plugins: DictObj, info: DictObj) -> None:
-        self.map = DictObj(dict())
+        self.map = DictObj({})
 
         self._setup(paths, plugins, info)
 

@@ -1,7 +1,7 @@
 # -*- coding: UTF-8 -*-
 # pylint: disable=too-few-public-methods
 #
-# Copyright (c) 2020, Jef Oliver
+# Copyright (c) 2020-2022, Jef Oliver
 #
 # This program is free software; you can redistribute it and/or modify it
 # under the terms and conditions of the GNU Lesser General Public License,
@@ -59,7 +59,7 @@ class DockerPlugin(plugin.Plugin):
 
 
 class SetupDockerPlugin(plugin.SetupPlugin):
-    """Setup the paths plugin"""
+    """Set up the docker plugin"""
 
     def __init__(self) -> None:
         super().__init__()

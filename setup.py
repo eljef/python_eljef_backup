@@ -7,7 +7,7 @@ setup(
     author='Jef Oliver',
     author_email='jef@eljef.me',
     description='Backup functionality and program',
-    install_requires=['eljef_core>=1.4.0'],
+    install_requires=['eljef_core>=2022.2.1'],
     license='LGPLv2.1',
     name='eljef_backup',
     packages=['eljef.backup', 'eljef.backup.cli', 'eljef.backup.plugins'],

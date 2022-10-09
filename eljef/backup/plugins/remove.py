@@ -1,7 +1,7 @@
 # -*- coding: UTF-8 -*-
 # pylint: disable=too-few-public-methods
 #
-# Copyright (c) 2020, Jef Oliver
+# Copyright (c) 2020-2022, Jef Oliver
 #
 # This program is free software; you can redistribute it and/or modify it
 # under the terms and conditions of the GNU Lesser General Public License,
@@ -49,7 +49,7 @@ class RemovePlugin(plugin.Plugin):
 
     def __init__(self, paths: Paths, project: str) -> None:
         super().__init__(paths, project)
-        self.remove_paths = list()
+        self.remove_paths = []
 
     def run(self) -> Tuple[bool, str]:
         """Run operations for this plugin
@@ -71,7 +71,7 @@ class RemovePlugin(plugin.Plugin):
 
 
 class SetupRemovePlugin(plugin.SetupPlugin):
-    """Setup the paths plugin"""
+    """Set up the remove plugin"""
 
     def __init__(self) -> None:
         super().__init__()

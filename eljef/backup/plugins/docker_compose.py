@@ -1,7 +1,7 @@
 # -*- coding: UTF-8 -*-
 # pylint: disable=too-few-public-methods
 #
-# Copyright (c) 2020, Jef Oliver
+# Copyright (c) 2020-2022, Jef Oliver
 #
 # This program is free software; you can redistribute it and/or modify it
 # under the terms and conditions of the GNU Lesser General Public License,
@@ -70,7 +70,7 @@ class DockerComposePlugin(plugin.Plugin):
 
 
 class SetupDockerComposePlugin(plugin.SetupPlugin):
-    """Setup the paths plugin"""
+    """Set up the docker compose plugin"""
 
     def __init__(self) -> None:
         super().__init__()
@@ -113,7 +113,7 @@ class SetupDockerComposePlugin(plugin.SetupPlugin):
             run_as = True
             uid = run_as_info.get('uid')
             gid = run_as_info.get('gid')
-            for test_id in {uid, gid}:
+            for test_id in (uid, gid):
                 if not isinstance(test_id, int):
                     raise ValueError('run_as.uid/run_as.gid must be integers')
 

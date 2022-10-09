@@ -2,7 +2,7 @@
 # pip install -r requirements.txt
 
 #### Required for operation ####
-eljef_core>=1.4.0
+git+https://git.eljef.me/python/eljef_core.git@2022.2.1#egg=eljef-core
 
 #### Needed for linting ####
 flake8
@@ -10,7 +10,6 @@ pylint
 
 #### Needed for testing ####
 pytest
-pytest-pythonpath # so tests can be run from the separated tests directory
 
 #### Needed for testing coverage ****
 pytest-cov
