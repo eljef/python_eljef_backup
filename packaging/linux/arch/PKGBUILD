@@ -10,6 +10,11 @@ url='https://git.eljef.me/python/eljef_backup'
 license=('LGPL2.1')
 depends=('python-eljef-core')
 makedepends=('git' 'python-build' 'python-installer' 'python-setuptools' 'python-wheel')
+optdepends=('bzip2: compress backup plugin'
+            'docker: docker plugin'
+            'docker-compose: docker-compose plugin'
+            'rsync: local rsync plugin'
+            'tar: compress backup plugin')
 source=("${_pkgname}::git+https://git.eljef.me/python/eljef_backup.git")
 sha512sums=('SKIP')
 
