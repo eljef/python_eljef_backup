@@ -2,7 +2,7 @@
 
 _pkgname=eljef_backup
 pkgname=python-eljef-backup
-pkgver=2022.10.1
+pkgver=2022.10.2
 pkgrel=1
 pkgdesc="Simple backup program that runs operations as steps."
 arch=('aarch64' 'x86_64')

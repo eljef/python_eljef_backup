@@ -1,4 +1,4 @@
-VERSION := 2022.10.1
+VERSION := 2022.10.2
 
 build:
 	python3 -m build --wheel --no-isolation
