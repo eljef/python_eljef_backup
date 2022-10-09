@@ -1,0 +1,27 @@
+# Maintainer: Jef Oliver (jef at eljef dot me)
+
+_pkgname=eljef_backup
+pkgname=python-eljef-backup
+pkgver=0.4.1
+pkgrel=1
+pkgdesc="Simple backup program that runs operations as steps."
+arch=('aarch64' 'x86_64')
+url='https://git.eljef.me/python/eljef_backup'
+license=('LGPL2.1')
+depends=('python-eljef-core')
+makedepends=('git' 'python-setuptools')
+source=("${_pkgname}::git+https://git.eljef.me/python/eljef_backup.git")
+sha512sums=('SKIP')
+
+build() {
+    cd "${_pkgname}"
+    python setup.py build
+}
+
+package() {
+    cd "${_pkgname}"
+    python setup.py install --optimize=1 --skip-build --root="${pkgdir}/"
+
+    install -Dm644 "${srcdir}/${_pkgname}/README.md" "${pkgdir}/usr/doc/${pkgname}/README.md"
+    cp -R "${srcdir}/${_pkgname}/configs" "${pkgdir}/usr/doc/${pkgname}/"
+}
