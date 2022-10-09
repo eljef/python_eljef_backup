@@ -1,7 +1,7 @@
 VERSION := 2022.10.1
 
 build:
-	python3 setup.py build
+	python3 -m build --wheel --no-isolation
 
 clean:
 	rm -rf build dist eljef_backup.egg-info \
@@ -16,7 +16,7 @@ depsupdate:
 	pip install --upgrade -r requirements.txt
 
 install:
-	python3 setup.py install
+	python3 -m installer dist/*.whl
 
 lint:
 	flake8 eljef/backup

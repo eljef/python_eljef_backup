@@ -4,6 +4,11 @@
 #### Required for operation ####
 git+https://git.eljef.me/python/eljef_core.git@2022.2.1#egg=eljef-core
 
+#### Needed for building ####
+build
+installer
+wheel
+
 #### Needed for linting ####
 flake8
 pylint
