@@ -1,4 +1,4 @@
-VERSION := 0.4.1
+VERSION := 2022.10.1
 
 build:
 	python3 setup.py build
