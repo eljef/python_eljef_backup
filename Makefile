@@ -29,4 +29,3 @@ versionset:
 	@$(eval OLDVERSION=$(shell cat setup.py | awk -F"[=,]" '/version=/{gsub("\047", ""); print $$2}'))
 	@sed -i -e "s/$(OLDVERSION)/$(VERSION)/" eljef/backup/__version__.py
 	@sed -i -e "s/version='$(OLDVERSION)'/version='$(VERSION)'/" setup.py
-	@sed -i -e "s/pkgver=$(OLDVERSION)/pkgver=$(VERSION)/" packaging/linux/arch/PKGBUILD
