@@ -2,7 +2,7 @@
 # pip install -r requirements.txt
 
 #### Required for operation ####
-git+https://git.eljef.me/python/eljef_core.git@2022.2.1#egg=eljef-core
+git+https://eljef.dev/python/eljef_core.git@2022.11.2
 
 #### Needed for building ####
 build

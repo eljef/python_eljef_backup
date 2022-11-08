@@ -1,25 +1,8 @@
 # -*- coding: UTF-8 -*-
+# SPDX-License-Identifier: 0BSD
 # pylint: disable=too-few-public-methods
-#
-# Copyright (c) 2020-2022, Jef Oliver
-#
-# This program is free software; you can redistribute it and/or modify it
-# under the terms and conditions of the GNU Lesser General Public License,
-# version 2.1, as published by the Free Software Foundation.
-#
-# This program is distributed in the hope it will be useful, but WITHOUT ANY
-# WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-# FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for
-# more details.
-#
-# Authors:
-# Jef Oliver <jef@eljef.me>
-#
-# plugin.py : ElJef Backup Plugins Functionality
-"""ElJef Backup Plugins Functionality
 
-ElJef backup backup functionality.
-"""
+"""Base Plugin Functionality"""
 
 import logging
 import os

@@ -7,12 +7,12 @@ setup(
     author='Jef Oliver',
     author_email='jef@eljef.me',
     description='Backup functionality and program',
-    install_requires=['eljef_core>=2022.2.1'],
-    license='LGPLv2.1',
+    install_requires=['eljef-core>=2022.11.2'],
+    license='0BSD',
     name='eljef_backup',
     packages=['eljef.backup', 'eljef.backup.cli', 'eljef.backup.plugins'],
     python_requires='>=3.8',
-    url='https://github.com/eljef/python_eljef_backup',
+    url='https://eljef.dev/python/eljef_backup',
     version='2022.10.2',
     entry_points={
         'console_scripts': [
