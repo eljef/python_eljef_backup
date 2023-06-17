@@ -79,8 +79,7 @@ class SetupSSHFSPlugin(plugin.SetupPlugin):
         self.name = 'sshfs'
         self.description = 'mount or unmount an sshfs filesystem'
 
-    @staticmethod
-    def setup(paths: Paths, project: str, info: dict) -> object:
+    def setup(self, paths: Paths, project: str, info: dict) -> object:
         """Sets up a plugin for operations
 
         Args:
@@ -99,14 +98,14 @@ class SetupSSHFSPlugin(plugin.SetupPlugin):
         sshfs_object.remote_path = info.get('remote_path')
 
         if not sshfs_object.action:
-            raise ValueError('action must be one of mount or unmount')
+            return self.failure('action must be one of mount or unmount')
         if not sshfs_object.local_path:
-            raise ValueError('local_path is empty')
+            return self.failure('local_path is empty')
         if not sshfs_object.remote_addr:
-            raise ValueError('remote_addr is empty')
+            return self.failure('remote_addr is empty')
         if not sshfs_object.remote_path:
-            raise ValueError('remote_path is empty')
+            return self.failure('remote_path is empty')
         if sshfs_object.mount_options and not isinstance(sshfs_object.mount_options, list):
-            raise TypeError('mount_options not list')
+            return self.failure('mount_options not list')
 
         return sshfs_object

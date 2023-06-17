@@ -14,6 +14,9 @@ from eljef.backup.project import Paths
 
 LOGGER = logging.getLogger(__name__)
 
+PLUGIN_NAME = 'docker_compose'
+"""PLUGIN_NAME holds the plugin name"""
+
 
 class DockerComposePlugin(plugin.Plugin):
     """Docker Compose Operations Class
@@ -57,11 +60,54 @@ class SetupDockerComposePlugin(plugin.SetupPlugin):
 
     def __init__(self) -> None:
         super().__init__()
-        self.name = 'docker_compose'
+        self.name = PLUGIN_NAME
         self.description = 'docker compose operations'
+        self.__ops = {'down', 'up'}
+
+    def __validate_action(self, action: str) -> Tuple[str, str]:
+        """Checks if the specified action is supported by docker-compose.
+
+        Args:
+            action: specified action to run with docker-compose
+
+        Returns:
+            A tuple of strings.
+            Tuple[0] = action
+            Tuple[1] = error message if an error is encountered
+        """
+        if not action:
+            return '', 'no action set'
+
+        if action not in self.__ops:
+            return '', 'action must be one of down or up'
+
+        return action, ''
 
     @staticmethod
-    def setup(paths: Paths, project: str, info: dict) -> object:
+    def __validate_docker_compose_path(docker_file) -> Tuple[str, str]:
+        """Checks if the specified docker-file exists and is a file.
+
+        Args:
+            docker_file: docker-compose.yml to validate
+
+        Returns:
+            A tuple of strings.
+            Tuple[0] = docker-compose.yml path
+            Tuple[1] = error message if an error is encountered
+        """
+        if not docker_file:
+            return '', 'no docker-compose file set'
+
+        if not os.path.exists(docker_file):
+            return '', 'docker-compose file not found'
+
+        if not os.path.isfile(docker_file) or \
+                (os.path.islink(docker_file) and not os.path.isfile(os.readlink(docker_file))):
+            return '', 'specified docker-compose file is not a file'
+
+        return docker_file, ''
+
+    def setup(self, paths: Paths, project: str, info: dict) -> object:
         """Sets up a plugin for operations
 
         Args:
@@ -72,21 +118,13 @@ class SetupDockerComposePlugin(plugin.SetupPlugin):
         Returns:
             dict: dictionary key: stage_name => object: plugin class to be run
         """
-        ops = {'down', 'up'}
+        action, msg = self.__validate_action(info.get('action'))
+        if msg:
+            return self.failure(msg)
 
-        action = info.get('action')
-        if not action:
-            raise SyntaxError('no action set for docker_compose plugin')
-        if action not in ops:
-            raise SyntaxError('docker_compose plugin actions must be one of down or up')
-
-        docker_file = info.get('path')
-        if not docker_file:
-            raise SyntaxError('no file set for docker_compose plugin')
-        if not os.path.exists(docker_file):
-            raise FileNotFoundError('docker file not found')
-        if not os.path.isfile(docker_file):
-            raise IOError('docker file not a file')
+        docker_file, msg = self.__validate_docker_compose_path(info.get('path'))
+        if msg:
+            return self.failure(msg)
 
         uid = 0
         gid = 0
@@ -98,7 +136,7 @@ class SetupDockerComposePlugin(plugin.SetupPlugin):
             gid = run_as_info.get('gid')
             for test_id in (uid, gid):
                 if not isinstance(test_id, int):
-                    raise ValueError('run_as.uid/run_as.gid must be integers')
+                    return self.failure('run_as.uid/run_as.gid must be integers')
 
         docker_compose_object = DockerComposePlugin(paths, project)
         docker_compose_object.action = action

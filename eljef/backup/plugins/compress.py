@@ -54,8 +54,7 @@ class SetupCompressPlugin(plugin.SetupPlugin):
         self.name = 'compress'
         self.description = 'compresses backups'
 
-    @staticmethod
-    def setup(paths: Paths, project: str, info: dict) -> object:
+    def setup(self, paths: Paths, project: str, info: dict) -> object:
         """Sets up a plugin for operations
 
         Args:

@@ -91,11 +91,26 @@ class SetupPlugin:
     """Base Setup Plugin Class that sets up the plugin class for operations"""
 
     def __init__(self) -> None:
+        self.error = ''
         self.name = 'NOTIMPLEMENTED'
         self.description = 'NOTIMPLEMENTED'
 
-    @staticmethod
-    def setup(paths: Paths, project: str, info: dict) -> object:
+    # Keep the useless return at the end of this function to visually signify
+    # the explicit None return to check for. Yep, this is being done C style.
+    # pylint: disable=useless-return
+    def failure(self, msg: str) -> object:
+        """Registers a failure message and returns None
+
+        Args:
+            msg: error message to register
+
+        Returns:
+            None at all times
+        """
+        self.error = f"{self.name}: {msg}"
+        return None
+
+    def setup(self, paths: Paths, project: str, info: dict) -> object:
         """Sets up a plugin for operations
 
         Args:

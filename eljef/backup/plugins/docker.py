@@ -13,6 +13,9 @@ from eljef.backup.project import Paths
 
 LOGGER = logging.getLogger(__name__)
 
+DOCKER = 'docker'
+"""Docker is the docker constant"""
+
 
 class DockerPlugin(plugin.Plugin):
     """Simple Docker Operations Class
@@ -46,11 +49,10 @@ class SetupDockerPlugin(plugin.SetupPlugin):
 
     def __init__(self) -> None:
         super().__init__()
-        self.name = 'docker'
-        self.description = 'simple docker operations'
+        self.name = DOCKER
+        self.description = f"simple {DOCKER} operations"
 
-    @staticmethod
-    def setup(paths: Paths, project: str, info: dict) -> object:
+    def setup(self, paths: Paths, project: str, info: dict) -> object:
         """Sets up a plugin for operations
 
         Args:
@@ -66,10 +68,10 @@ class SetupDockerPlugin(plugin.SetupPlugin):
         docker_object.container = info.get('container')
 
         if not docker_object.action:
-            raise ValueError('docker action not set')
+            return self.failure('action not set')
         if docker_object.action not in {'restart', 'start', 'stop'}:
-            raise ValueError('docker action not one of restart, start, stop')
+            return self.failure('action not one of restart, start, stop')
         if docker_object.action != 'image_prune' and not docker_object.container:
-            raise ValueError('docker container not set')
+            return self.failure('container not set')
 
         return docker_object

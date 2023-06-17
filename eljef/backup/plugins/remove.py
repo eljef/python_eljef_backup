@@ -61,8 +61,7 @@ class SetupRemovePlugin(plugin.SetupPlugin):
         self.name = 'remove'
         self.description = 'remove paths from backup'
 
-    @staticmethod
-    def setup(paths: Paths, project: str, info: dict) -> object:
+    def setup(self, paths: Paths, project: str, info: dict) -> object:
         """Sets up a plugin for operations
 
         Args:
@@ -77,6 +76,6 @@ class SetupRemovePlugin(plugin.SetupPlugin):
         remove_object.remove_paths = info.get('paths')
 
         if not remove_object.remove_paths or len(remove_object.remove_paths) < 1:
-            raise ValueError('paths not set for remove')
+            return self.failure('paths not set for remove')
 
         return remove_object

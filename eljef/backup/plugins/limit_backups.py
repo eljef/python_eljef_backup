@@ -60,8 +60,7 @@ class SetupLimitPlugin(plugin.SetupPlugin):
         self.name = 'limit_backups'
         self.description = 'limit the number of stored backups'
 
-    @staticmethod
-    def setup(paths: Paths, project: str, info: dict) -> object:
+    def setup(self, paths: Paths, project: str, info: dict) -> object:
         """Sets up a plugin for operations
 
         Args:
@@ -78,9 +77,9 @@ class SetupLimitPlugin(plugin.SetupPlugin):
         backups_total = info.get('total')
         if backups_total:
             if not isinstance(backups_total, int):
-                raise ValueError('limit_backups.total must be an integer')
+                return self.failure('total must be an integer')
             if backups_total < 1:
-                raise ValueError('limit_backups.total must be greater than zero')
+                return self.failure('total must be greater than zero')
             limit_plugin.total = backups_total
 
         return limit_plugin

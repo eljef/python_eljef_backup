@@ -103,8 +103,7 @@ class SetupLocalRsyncPlugin(plugin.SetupPlugin):
         self.name = 'local_rsync'
         self.description = 'backup paths locally using rsync'
 
-    @staticmethod
-    def setup(paths: Paths, project: str, info: dict) -> object:
+    def setup(self, paths: Paths, project: str, info: dict) -> object:
         """Sets up a plugin for operations
 
         Args:
@@ -116,14 +115,14 @@ class SetupLocalRsyncPlugin(plugin.SetupPlugin):
         """
         rsync_paths = info.get('paths')
         if not rsync_paths:
-            raise ValueError('paths empty')
+            return self.failure('paths empty')
         if not isinstance(rsync_paths, list):
-            raise TypeError('paths not list')
+            return self.failure('paths not list')
 
         for data in rsync_paths:
             path = data.get('path')
             if not path:
-                raise SyntaxError('paths must include a path definition')
+                return self.failure('paths must include a path definition')
 
         paths_object = LocalRsyncPlugin(paths, project)
         paths_object.rsync_paths = rsync_paths
