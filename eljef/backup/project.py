@@ -66,21 +66,22 @@ class Project:
 
             self.map[op_name] = plugins[plugin]().setup(paths, self.project, op_settings)
 
-    def run(self) -> Tuple[bool, str]:
+    def run(self) -> Tuple[bool, str, str]:
         """Run operations for this project
 
         Returns:
             bool: operations completed successfully
             str: if operations failed, the error message explaining what failed
+            str: if operations failed, the name of the project
         """
         LOGGER.info("Project: %s", self.project)
 
         for pos in sorted(list(self.map.keys())):
             finished, error_msg = self.map[pos].run()
             if not finished:
-                return finished, error_msg
+                return finished, error_msg, self.project
 
-        return True, ''
+        return True, '', ''
 
 
 class Projects:
@@ -88,20 +89,21 @@ class Projects:
 
     paths: paths and backup name
     plugins: loaded plug-ins
-    info: projects settings
+    project_configs: project configurations
     """
 
-    def __init__(self, paths: Paths, plugins: DictObj, info: DictObj) -> None:
+    def __init__(self, paths: Paths, plugins: DictObj, project_configs: DictObj) -> None:
+        self.error = ''
         self.map = DictObj({})
 
-        self._setup(paths, plugins, info)
+        self._setup(paths, plugins, project_configs)
 
-    def _setup(self, paths: Paths, plugins: DictObj, info: DictObj) -> None:
-        projects = info.get('projects')
-        if not projects:
-            raise SyntaxError("no projects defined")
+    def _setup(self, paths: Paths, plugins: DictObj, project_configs: DictObj) -> None:
+        if not project_configs:
+            self.error = 'no projects defined'
+            return
 
-        for project_name, project_settings in projects.items():
+        for project_name, project_settings in project_configs.items():
             name = project_settings.pop('name', '')
             if not name:
                 name = project_name
@@ -114,16 +116,17 @@ class Projects:
             else:
                 self.map[project_name] = Project(paths, name, plugins, project_settings)
 
-    def run(self) -> Tuple[bool, str]:
+    def run(self) -> Tuple[bool, str, str]:
         """Run all defined projects
 
         Returns:
             bool: operations completed successfully
             str: if operations failed, the error message explaining what failed
+            str: if operations failed, the name of the project that failed
         """
         for pos in sorted(list(self.map.keys())):
-            finished, error_msg = self.map[pos].run()
+            finished, error_msg, project = self.map[pos].run()
             if not finished:
-                return finished, error_msg
+                return finished, error_msg, project
 
-        return True, ''
+        return True, '', ''

@@ -10,7 +10,7 @@ setup(
     install_requires=['eljef-core>=2022.11.2'],
     license='0BSD',
     name='eljef_backup',
-    packages=['eljef.backup', 'eljef.backup.cli', 'eljef.backup.plugins'],
+    packages=['eljef.backup', 'eljef.backup.cli', 'eljef.backup.notifiers', 'eljef.backup.plugins'],
     python_requires='>=3.8',
     url='https://eljef.dev/python/eljef_backup',
     version='2022.11.1',

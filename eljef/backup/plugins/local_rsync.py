@@ -69,14 +69,20 @@ class LocalRsyncPlugin(plugin.Plugin):
             bool: operations completed successfully
             str: if operations failed, the error message explaining what failed
         """
-        backup_path = _make_backup_path(self.paths.backup_path,
-                                        self.paths.subdir if self.paths.subdir else self.project)
+        backup_subdir = self.paths.subdir if self.paths.subdir else self.project
+        try:
+            backup_path = _make_backup_path(self.paths.backup_path, backup_subdir)
+        except Exception as exception_object:  # pylint: disable=broad-exception-caught
+            return False, f"create backup path: {backup_subdir}: {exception_object}"
 
         for copy_path in self.rsync_paths:
             full_backup_path = backup_path
             subdir = copy_path.get('backup_dir')
             if subdir:
-                full_backup_path = _make_backup_path(backup_path, subdir)
+                try:
+                    full_backup_path = _make_backup_path(backup_path, subdir)
+                except Exception as exception_object:  # pylint: disable=broad-exception-caught
+                    return False, f"create backup path: {subdir}: {exception_object}"
 
             path = _correctly_terminate_path(copy_path.get('path'))
 

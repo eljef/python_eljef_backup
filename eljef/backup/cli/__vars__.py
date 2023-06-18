@@ -18,6 +18,8 @@ DEFAULTS = {
         'clean_on_failure': True,
         'skip_backup_directory': False,
         'path': '',
+        'notifiers_folder': '',
+        'notifiers': {},
         'projects_folder': '',
         'projects': {}
     }
