@@ -7,6 +7,7 @@
 from typing import List
 
 from eljef.backup.notifiers.console import Console
+from eljef.backup.notifiers.gotify import Gotify
 from eljef.backup.notifiers.notifier import Notifier
 
 
@@ -18,7 +19,7 @@ class Holder:
         active: a list of active notifiers
     """
     def __init__(self) -> None:
-        self.__notifiers = {}
+        self.__notifiers = {'gotify': Gotify}
         self.active: List[Notifier] = []
 
     def add(self, name: str, settings: dict) -> str:

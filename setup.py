@@ -7,7 +7,7 @@ setup(
     author='Jef Oliver',
     author_email='jef@eljef.me',
     description='Backup functionality and program',
-    install_requires=['eljef-core>=2022.11.2'],
+    install_requires=['eljef-core>=2022.11.2', 'requests'],
     license='0BSD',
     name='eljef_backup',
     packages=['eljef.backup', 'eljef.backup.cli', 'eljef.backup.notifiers', 'eljef.backup.plugins'],

@@ -3,6 +3,7 @@
 
 #### Required for operation ####
 git+https://eljef.dev/python/eljef_core.git@2022.11.2
+requests
 
 #### Needed for building ####
 build
