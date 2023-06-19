@@ -48,7 +48,7 @@ class SSHFSPlugin(plugin.Plugin):
 
     def __unmount(self) -> list:
         """Builds the command to unmount the SSHFS path"""
-        return ['unmount', self.local_path]
+        return ['umount', self.local_path]
 
     def run(self) -> Tuple[bool, str]:
         """Run operations for this plugin

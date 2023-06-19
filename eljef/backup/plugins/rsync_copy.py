@@ -70,7 +70,7 @@ class RSYNCCopyPlugin(plugin.Plugin):
 
 
 class SetupRSYNCCopyPlugin(plugin.SetupPlugin):
-    """Set up the RSYNC copy plunin"""
+    """Set up the RSYNC copy plugin"""
 
     def __init__(self) -> None:
         super().__init__()
@@ -98,7 +98,7 @@ class SetupRSYNCCopyPlugin(plugin.SetupPlugin):
             path = data.get('from')
             if not path:
                 return self.failure('each path definition must contain a from')
-            path = path.get('to')
+            path = data.get('to')
             if not path:
                 return self.failure('each path definition must contain a to')
 
