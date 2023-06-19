@@ -56,6 +56,21 @@ def create_child_backup_directory(backup_path: str, child: str) -> str:
     return path
 
 
+def rsync_terminate_path(path: str) -> str:
+    """adds a trailing slash to the end of the path
+
+    Args:
+        path: path to add trailing slash to
+
+    Returns:
+        correctly terminated path
+    """
+    if os.path.isfile(path):
+        return path
+
+    return path if path[-1] == os.path.sep else path + os.path.sep
+
+
 # pylint: disable=too-many-instance-attributes
 class Backup:
     """The Backup running class."""
