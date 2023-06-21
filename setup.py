@@ -13,7 +13,7 @@ setup(
     packages=['eljef.backup', 'eljef.backup.cli', 'eljef.backup.notifiers', 'eljef.backup.plugins'],
     python_requires='>=3.8',
     url='https://eljef.dev/python/eljef_backup',
-    version='2022.11.1',
+    version='2023.06.1',
     entry_points={
         'console_scripts': [
             'ej-backup = eljef.backup.cli.__main__:main'
