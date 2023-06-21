@@ -1,0 +1,22 @@
+name: sync_backups_to_remote
+00_mount_sshfs:
+  plugin: sshfs
+  action: mount
+  config_file: /backups/ssh/config
+  local_path: /mnt/sshfs
+  mount_options:
+    - allow_other
+  remote_addr: 192.168.1.2
+  remote_path: /backups
+01_rsync_copy_backups:
+  plugin: rsync_copy
+  paths:
+    - from: /backups
+      to: /mnt/sshfs
+  rsync_options:
+    - 'rltpu'
+    - '--delete-after'
+02_unmount_sshfs:
+  plugin: sshfs
+  action: mount
+  local_path: /mnt/sshfs

@@ -1,0 +1,8 @@
+# The compress_previous plugin finds uncompressed backup directories in
+# the defined backup path and compresses them. Outside defining the plugin in a
+# step, there are no settings for this plugin.
+
+# name of step running the compress_previous plugin
+00_compress:
+  # plugin: compress_previous (name of the compress_previous plugin)
+  plugin: compress_previous

@@ -1,0 +1,9 @@
+# The compress plugin requires the backup.skip_backup_directory to be set to false
+# This plugin should be the last plugin to run in the backup.
+
+# name of step running the compress plugin
+00_compress:
+  # plugin: compress (name of the compress plugin)
+  plugin: compress
+  # do_compress: when true, will compress the resultant parent backup directory
+  do_compress: true

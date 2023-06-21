@@ -1,0 +1,6 @@
+name: compress_previous_backup
+00_compress_previous_backup:
+  plugin: compress_previous
+01_limit_backups:
+  plugin: limit_backups
+  total: 5

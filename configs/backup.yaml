@@ -1,80 +1,19 @@
+# tells ej-backup that this is a backup configuration
 backup:
+  # clean_on_failure: true - remove the parent backup directory on failure during backup
+  #                   false - leave the parent backup directory in place on failure during backup
   clean_on_failure: true
+  # skip_backup_directory: true - skip creating a parent backup directory
+  #                                 * This is helpful for operations where files won't be copied into a backup
+  #                                   or during compressing previous backups
+  #                        false - don't skip creating a parent backup directory
   skip_backup_directory: false
+  # path: path to a directory that will hold backups
+  #         * This is where parent backup directories will be created in the format of 2023-06-01_00-00-00
+  #         * resultant: /path/to/backup/directory/2023-06-01_00-00-00
   path: /path/to/backup/directory
+  # notifiers_folder: path, relative to the backup configuration (backup.yaml) that holds notifier configurations.
+  #                   Only one configuration is supported per notifier currently.
+  notifiers_folder: path/to/notifiers.d/
+  # projects_folder: path, relative to the backup configuration (backup.yaml) that holds project configurations.
   projects_folder: path/to/projects.d/
-  projects:
-    00_project:
-      name: project
-      backup_dir: some_name
-      00_rsync:
-        plugin: local_rsync
-        paths:
-          - path: /path/to/dir
-            exclude:
-            - path/to/exclude
-            - path/to/exclude2
-            backup_dir: /path/to/create
-          - path: /path/to/dir2
-    01_project:
-      00_docker:
-        plugin: docker
-        container: docker_container
-        action: stop
-      01_rsync:
-        plugin: local_rsync
-        paths:
-          - /path/to/dir
-      02_remove:
-        plugin: remove
-        paths:
-          - MediaCover
-      03_docker:
-        plugin: docker
-        container: docker_container
-        action: start
-    02_project:
-      00_docker_compose:
-        plugin: docker_compose
-        action: build
-        path: /full/path/to/docker-compose.yml
-        stack_name: stackName
-        run_as:
-          uid: 1000
-          gid: 1000
-      01_docker_compose:
-        plugin: docker_compose
-        action: pull
-        path: /full/path/to/docker-compose.yml
-        run_as:
-          uid: 1000
-          gid: 1000
-        stack_name: stackName
-      02_docker_compose:
-        plugin: docker_compose
-        action: down
-        path: /full/path/to/docker-compose.yml
-        stack_name: stackName
-        run_as:
-          uid: 1000
-          gid: 1000
-      03_rsync:
-        plugin: local_rsync
-        paths:
-          - /path/to/dir
-      04_docker_compose:
-        plugin: docker_compose
-        action: up
-        path: /full/path/to/docker-compose.yml
-        stack_name: stackName
-        run_as:
-          uid: 1000
-          gid: 1000
-    03_project:
-      00_compress:
-        plugin: compress
-        do_compress: true
-    04_project:
-      00_limit:
-        plugin: limit_backups
-        total: 7

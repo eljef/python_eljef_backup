@@ -1,0 +1,16 @@
+name: backup_docker_container
+backup_dir: docker_container_name
+00_docker:
+  plugin: docker
+  container: docker_container_name
+  action: stop
+01_local_rsync:
+  plugin: local_rsync
+  paths:
+    - path: /path/to/dir
+      exclude:
+      - path/to/exclude
+02_docker:
+  plugin: docker
+  container: docker_container_name
+  action: start

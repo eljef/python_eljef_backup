@@ -71,7 +71,7 @@ class SetupDockerPlugin(plugin.SetupPlugin):
             return self.failure('action not set')
         if docker_object.action not in {'restart', 'start', 'stop'}:
             return self.failure('action not one of restart, start, stop')
-        if docker_object.action != 'image_prune' and not docker_object.container:
+        if not docker_object.container:
             return self.failure('container not set')
 
         return docker_object

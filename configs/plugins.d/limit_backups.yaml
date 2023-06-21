@@ -1,0 +1,9 @@
+# limit_backups limits the number of stored backups to the defined total.
+# only the latest N total backups will be kept.
+
+# name of step running the limit_backups plugin
+00_limit_backups:
+  # plugin: limit_backups (name of the limit_backups plugin)
+  plugin: limit_backups
+  # total: total number of stored backups to keep
+  total: 5

@@ -43,12 +43,7 @@ class DockerComposePlugin(plugin.Plugin):
             bool: operations completed successfully
             str: if operations failed, the error message explaining what failed
         """
-        cmd = ['docker-compose', '-f', self.docker_file]
-
-        if self.stack_name:
-            cmd += ['-p', self.stack_name]
-
-        cmd += [self.action]
+        cmd = ['docker-compose', '-f', self.docker_file, self.action]
         if self.action == 'up':
             cmd += ['-d']
 

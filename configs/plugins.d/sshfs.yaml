@@ -1,0 +1,20 @@
+# The sshfs plugin mounts and unmounts remote paths via sshfs
+
+# name of step running the sshfs plugin
+00_sshfs:
+  # plugin: sshfs (name of the sshfs plugin)
+  plugin: sshfs
+  # action: action to run (mount or unmount)
+  action: mount
+  # local_path: local folder to mount / unmount
+  local_path: /path/to/local/mount
+  # the following options are only needed if the action is mount
+  # config_file: path to ssh config file to use (optional)
+  config_file: /path/to/ssh/config
+  # remote_addr: remote address to use for sshfs
+  remote_addr: 192.168.1.2
+  # remote_path: remote path to mount
+  remote_path: /path/to/remote/mount/path
+  # mount_options: a list of options to pass to the mount command for sshfs (-o options)
+  mount_options:
+    - allow_other

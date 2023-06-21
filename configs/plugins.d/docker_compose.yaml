@@ -1,0 +1,17 @@
+# The docker_compose plugin performs actions on docker_compose stacks
+
+# name of step running the docker_compose plugin
+00_docker_compose:
+  # plugin: docker_compose (name of the docker_compose plugin)
+  plugin: docker_compose
+  # action: docker-compose action to run (down or up)
+  #         if action is up, '-d' is appended automatically
+  action: up
+  # path: Path to the docker-compose file to run
+  path: /full/path/to/docker-compose.yml
+  # run_as: if defined, this plugin will run docker-compose as the defined uid and gid
+  run_as:
+    # uid: the uid to run this command as, if defined. must be numerical
+    uid: 1000
+    # gid: the gid to run this command as, if defined. must be numerical
+    gid: 1000

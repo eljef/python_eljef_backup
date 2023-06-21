@@ -101,11 +101,12 @@ class SetupSSHFSPlugin(plugin.SetupPlugin):
             return self.failure('action must be one of mount or unmount')
         if not sshfs_object.local_path:
             return self.failure('local_path is empty')
-        if not sshfs_object.remote_addr:
-            return self.failure('remote_addr is empty')
-        if not sshfs_object.remote_path:
-            return self.failure('remote_path is empty')
-        if sshfs_object.mount_options and not isinstance(sshfs_object.mount_options, list):
-            return self.failure('mount_options not list')
+        if sshfs_object.action == MOUNT:
+            if not sshfs_object.remote_addr:
+                return self.failure('remote_addr is empty')
+            if not sshfs_object.remote_path:
+                return self.failure('remote_path is empty')
+            if sshfs_object.mount_options and not isinstance(sshfs_object.mount_options, list):
+                return self.failure('mount_options not list')
 
         return sshfs_object

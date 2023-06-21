@@ -1,0 +1,20 @@
+# rsync_copy uses rsync to copy data between folders.
+# This does not copy data into the backup folder. It simply moves data
+# around the system. This is useful for staging, or for moving data after
+# using the sshfs plugin to mount a remote system.
+
+# name of step running the rsync_copy plugin
+00_rsync_copy:
+  # plugin: rsync_copy (name of the rsync_copy plugin)
+  plugin: rsync_copy
+  # paths: a list of paths to copy. Each path in the list must contain a from and to
+  paths:
+      # from: path to copy from
+    - from: /path/from/
+      # to: path to copy to
+      to: /path/to/
+  # rsync_options: rsync command line options. The default is '-a'
+  #                this can be used to override the default.
+  rsync_options:
+    - '-rltpu'
+    - '--delete-after'

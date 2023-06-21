@@ -1,0 +1,18 @@
+# The local_rsync plugin uses rsync to copy paths into the subdirectory for a project inside the
+# parent backup directory.
+
+backup_dir: some_name
+# name of the step running the local_rsync plugin.
+00_rsync:
+  # plugin: local_rsync (name of this plugin)
+  plugin: local_rsync
+  # paths: A list of paths to copy into the backup directory
+  paths:
+    # each path definition must contain a path declaration
+    # path: path to copy into the backup directory
+    - path: /path/to/dir
+      # exclude: a list of paths to exclude from copying (uses rsync --exclude)
+      exclude:
+      - path/to/exclude
+      - path/to/exclude2
+    - path: /path/to/dir2

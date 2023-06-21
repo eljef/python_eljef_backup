@@ -1,0 +1,18 @@
+# The docker plugin performs actions on docker containers
+
+# name of step running the docker plugin
+00_docker:
+  # plugin: docker (name of the docker plugin.)
+  plugin: docker
+  # container: name of the container to perform action on
+  container: docker_container
+  # action: action to perform on container (start, stop, restart)
+  action: stop
+# name of step running the docker plugin
+01_docker:
+  # plugin: docker (name of the docker plugin.)
+  plugin: docker
+  # container: name of the container to perform action on
+  container: docker_container
+  # action: action to perform on container (start, stop, restart)
+  action: start

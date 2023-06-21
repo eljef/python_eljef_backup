@@ -1,0 +1,10 @@
+# Removes paths from the parent_backup_folder/project_subfolder
+
+# name of step running the remove plugin
+00_remove:
+  # plugin: remove (name of the remove plugin)
+  plugin: remove
+  # paths: a list of paths to remove from the backup as stated above
+  paths:
+    - SomePath
+    - some/other/path

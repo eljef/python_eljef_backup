@@ -1,0 +1,5 @@
+backup:
+  skip_backup_directory: true
+  path: /backups
+  notifiers_folder: notifiers.d/
+  projects_folder: projects.d/

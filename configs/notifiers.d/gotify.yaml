@@ -1,0 +1,8 @@
+# configuration for the gotify notifier
+# gotify_key: gotify api access key
+gotify_key: some.key
+# message_title: title to include when sending a message through gotify
+message_title: 'Awesome Backup'
+# url: the gotify url
+url: https://gotify.website.com
+# url: https://website.com/gotify
