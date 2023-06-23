@@ -108,7 +108,7 @@ class Backup:
             os.makedirs(self._parent_dir, 0o750, True)
         except Exception as exception_object:  # pylint: disable=broad-exception-caught
             self._notif.failure(f"create parent backup directory: {exception_object}")
-            return False
+            return self.__failure_cleanup()
 
         return True
 
@@ -126,15 +126,26 @@ class Backup:
 
         return True
 
-    def __failure_cleanup(self) -> None:
-        """Cleanup the directory used for backup"""
+    def __failure_cleanup(self) -> bool:
+        """Cleanup the directory used for backup.
+
+        Returns:
+            False always
+        """
         if not self._settings.backup.skip_backup_directory and self._settings.backup.clean_on_failure:
-            fops.delete(self._parent_dir)
+            try:
+                fops.delete(self._parent_dir)
+            except Exception as exception_object:  # pylint: disable=broad-exception-caught
+                self._notif.failure(f"load config: {exception_object}")
             for ext in ('tar.gz', 'tar.bz2'):
                 try:
                     fops.delete(f"{self._parent_dir}.{ext}")
                 except FileNotFoundError:
                     pass
+                except Exception as exception_object:  # pylint: disable=broad-exception-caught
+                    self._notif.failure(f"load config: {exception_object}")
+
+        return False
 
     def load_config(self) -> bool:
         """Loads the configuration file and any project files loaded in projects_folder if defined
@@ -264,7 +275,7 @@ class Backup:
             self._projects = Projects(paths, self._plugins, self._project_configs)
         except Exception as exception_object:  # pylint: disable=broad-exception-caught
             self._notif.failure(f"prepare projects: {exception_object}")
-            return False
+            return self.__failure_cleanup()
 
         return True
 
@@ -278,10 +289,10 @@ class Backup:
             finished, error_msg, project = self._projects.run()
             if not finished:
                 self._notif.failure(f"{project}: {error_msg}")
-                self.__failure_cleanup()
+                return self.__failure_cleanup()
         except Exception as exception_object:  # pylint: disable=broad-exception-caught
             self._notif.failure(f"run projects: {exception_object}")
-            return False
+            return self.__failure_cleanup()
 
         return True
 
