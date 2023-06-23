@@ -1,4 +1,4 @@
-VERSION := 2023.06.2
+VERSION := 2023.06.3
 
 build:
 	python3 -m build --wheel --no-isolation
