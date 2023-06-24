@@ -1,5 +1,27 @@
 VERSION := 2023.06.3
 
+# all runs help
+all : help
+
+# help lists out targets
+help :
+	$(info $(NULL))
+	$(info ** Available Targets **)
+	$(info $(NULL))
+	$(info $(NULL)	build        - builds a python egg for installation)
+	$(info $(NULL)	clean        - removes build directories)
+	$(info $(NULL)	depsinstall  - installs dependencies via pip)
+	$(info $(NULL)	depsupdate   - upgrades dependencies via pip)
+	$(info $(NULL)	help         - prints this message)
+	$(info $(NULL)	install      - installs the project onto the system)
+	$(info $(NULL)	lint         - runs linting for the project)
+	$(info $(NULL)	test         - runs tests for the project)
+	$(info $(NULL)	testcoverage - runs test coverage reports for the project)
+	$(info $(NULL)	versionget   - returns the current project version)
+	$(info $(NULL)	versionset   - updates the project version in all version files)
+	$(info $(NULL))
+	@:
+
 build:
 	python3 -m build --wheel --no-isolation
 
@@ -21,6 +43,12 @@ install:
 lint:
 	flake8 eljef/backup
 	pylint eljef/backup
+
+test:
+	pytest
+
+testcoverage:
+	pytest --cov=eljef/ tests/
 
 versionget:
 	@echo $(VERSION)
